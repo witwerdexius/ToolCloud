@@ -1,4 +1,4 @@
-import { createBrowserClient, createServerClient } from "@supabase/ssr";
+import { createBrowserClient, createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 // ─── Browser-Client (für Client Components) ────────────────────────────────────
@@ -21,7 +21,7 @@ export async function createServerClientInstance() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set(name, value, options)
           );
