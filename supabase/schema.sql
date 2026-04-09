@@ -5,7 +5,8 @@
 
 -- Erweiterungen aktivieren
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "unaccent";  -- Für Volltextsuche ohne Umlaute
+CREATE EXTENSION IF NOT EXISTS "unaccent";   -- Für Volltextsuche ohne Umlaute
+CREATE EXTENSION IF NOT EXISTS "btree_gist"; -- Für GIST-Index auf skalare Typen (UUID, Datum)
 
 
 -- ─── ENUM-Typen ───────────────────────────────────────────────────────────────
