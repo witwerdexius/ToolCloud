@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ItemCard } from "@/components/items/item-card";
 import { SearchBar } from "@/components/search/search-bar";
 import { CategoryChips } from "@/components/search/category-chips";
+import { SortSelect } from "@/components/search/sort-select";
 import type { Item } from "@/types";
 import type { Category } from "@/types";
 
@@ -115,19 +116,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
                 <CategoryChips />
               </Suspense>
             </div>
-            <select
-              defaultValue={sort ?? "newest"}
-              onChange={(e) => {
-                const url = new URL(window.location.href);
-                url.searchParams.set("sort", e.target.value);
-                window.location.href = url.toString();
-              }}
-              className="shrink-0 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-sm text-gray-600 focus:outline-none"
-            >
-              <option value="newest">Neueste</option>
-              <option value="price_asc">Günstigste</option>
-              <option value="rating">Beste Bewertung</option>
-            </select>
+            <Suspense>
+              <SortSelect defaultValue={sort ?? "newest"} />
+            </Suspense>
           </div>
         </div>
       </div>
