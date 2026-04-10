@@ -1,4 +1,6 @@
+import React from "react";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/auth/logout-button";
 
@@ -7,6 +9,9 @@ export async function Header() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const headersList = headers();
+  const pathname = headersList.get("x-pathname") ?? "";
 
   let profile: { name: string } | null = null;
   if (user) {
@@ -26,6 +31,19 @@ export async function Header() {
         .toUpperCase()
         .slice(0, 2)
     : "?";
+
+  function navLinkStyle(active: boolean): React.CSSProperties {
+    return {
+      padding: "8px 14px",
+      borderRadius: 8,
+      fontSize: 14,
+      fontWeight: 500,
+      textDecoration: "none",
+      transition: "background .15s, color .15s",
+      color: active ? "#2E7D62" : "#374151",
+      background: active ? "#E8F5F0" : "transparent",
+    };
+  }
 
   return (
     <header
@@ -47,26 +65,25 @@ export async function Header() {
           <>
             <Link
               href="/"
-              className="rounded-lg px-[14px] py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              style={{ fontSize: 14 }}
+              style={navLinkStyle(pathname === "/")}
             >
               Entdecken
             </Link>
             <Link
               href="/bookings"
-              className="rounded-lg px-[14px] py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+              style={navLinkStyle(pathname.startsWith("/bookings"))}
             >
               Meine Buchungen
             </Link>
             <Link
               href="/items/new"
-              className="rounded-lg px-[14px] py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+              style={navLinkStyle(pathname.startsWith("/items/new"))}
             >
               + Inserat
             </Link>
             <Link
               href="/messages"
-              className="rounded-lg px-[14px] py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+              style={navLinkStyle(pathname.startsWith("/messages"))}
             >
               Nachrichten
             </Link>
@@ -90,20 +107,23 @@ export async function Header() {
           <>
             <Link
               href="/"
-              className="rounded-lg px-[14px] py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+              style={navLinkStyle(pathname === "/")}
             >
               Entdecken
             </Link>
             <Link
               href="/auth/login"
-              className="rounded-lg px-[14px] py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+              style={navLinkStyle(pathname.startsWith("/auth/login"))}
             >
               Anmelden
             </Link>
             <Link
               href="/auth/register"
-              className="rounded-lg px-[14px] py-2 text-sm font-semibold text-white transition-colors"
-              style={{ background: "#2E7D62" }}
+              style={{
+                padding: "10px 20px", borderRadius: 8, fontSize: 14, fontWeight: 600,
+                background: "#2E7D62", color: "#fff", textDecoration: "none",
+                transition: "background .15s",
+              }}
             >
               Registrieren
             </Link>

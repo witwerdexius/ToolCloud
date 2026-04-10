@@ -8,17 +8,17 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   foto_video:"Foto & Video",
   kueche:    "Küche",
   garten:    "Garten",
-  party:     "Party",
+  party:     "Party & Events",
 };
 
 export const CATEGORY_ICONS: Record<Category, string> = {
   werkzeug:  "🔧",
-  camping:   "⛺",
-  musik:     "🎸",
-  sport:     "⚽",
+  camping:   "🏕️",
+  musik:     "🎵",
+  sport:     "🚲",
   foto_video:"📷",
   kueche:    "🍳",
-  garten:    "🌱",
+  garten:    "🌿",
   party:     "🎉",
 };
 

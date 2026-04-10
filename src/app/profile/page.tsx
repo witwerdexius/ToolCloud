@@ -90,7 +90,7 @@ export default async function ProfilePage() {
           </div>
 
           {/* Stats */}
-          <div style={{ display: "flex", gap: 28, marginTop: 20, flexWrap: "wrap" }}>
+          <div className="profile-stats-row" style={{ display: "flex", gap: 28, marginTop: 20, flexWrap: "wrap" }}>
             <div style={{ textAlign: "center", color: "#fff" }}>
               <div style={{ fontSize: 22, fontWeight: 800 }}>{bookings?.length ?? 0}</div>
               <div style={{ fontSize: 12, opacity: 0.8, marginTop: 2 }}>Ausgeliehen</div>

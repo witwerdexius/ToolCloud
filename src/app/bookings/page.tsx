@@ -1,10 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import {
-  BOOKING_STATUS_LABELS,
-  BOOKING_STATUS_COLORS,
-} from "@/lib/constants";
+import { BOOKING_STATUS_LABELS } from "@/lib/constants";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { BookingActionButtons } from "@/components/booking/booking-action-buttons";
 
@@ -54,29 +51,29 @@ export default async function BookingsPage() {
     : { data: [] };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-3xl px-4 py-10">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Buchungen</h1>
+    <main style={{ minHeight: "100vh", background: "#F9FAFB" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "28px 24px 60px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#111827" }}>Buchungen</div>
         </div>
 
         {/* Meine Anfragen */}
-        <section className="mb-10">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 16 }}>
             Meine Anfragen
-          </h2>
+          </div>
           {!myRequests || myRequests.length === 0 ? (
-            <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center">
-              <p className="text-gray-500">Du hast noch keine Buchungsanfragen gesendet.</p>
+            <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", padding: 40, textAlign: "center" }}>
+              <p style={{ fontSize: 14, color: "#9CA3AF" }}>Du hast noch keine Buchungsanfragen gesendet.</p>
               <Link
                 href="/"
-                className="mt-3 inline-block text-sm text-emerald-600 hover:underline"
+                style={{ display: "inline-block", marginTop: 12, fontSize: 14, color: "#2E7D62", textDecoration: "none" }}
               >
                 Inserate entdecken
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {myRequests.map((booking) => (
                 <BookingCard
                   key={booking.id}
@@ -87,25 +84,25 @@ export default async function BookingsPage() {
               ))}
             </div>
           )}
-        </section>
+        </div>
 
         {/* Eingehende Anfragen */}
-        <section>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 16 }}>
             Eingehende Anfragen
-          </h2>
+          </div>
           {!incoming || incoming.length === 0 ? (
-            <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center">
-              <p className="text-gray-500">Noch keine Anfragen für deine Inserate.</p>
+            <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", padding: 40, textAlign: "center" }}>
+              <p style={{ fontSize: 14, color: "#9CA3AF" }}>Noch keine Anfragen für deine Inserate.</p>
               <Link
                 href="/items/new"
-                className="mt-3 inline-block text-sm text-emerald-600 hover:underline"
+                style={{ display: "inline-block", marginTop: 12, fontSize: 14, color: "#2E7D62", textDecoration: "none" }}
               >
                 Inserat erstellen
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {incoming.map((booking) => (
                 <BookingCard
                   key={booking.id}
@@ -116,7 +113,7 @@ export default async function BookingsPage() {
               ))}
             </div>
           )}
-        </section>
+        </div>
       </div>
     </main>
   );
@@ -140,6 +137,14 @@ type BookingCardData = {
   borrower: { id: string; name: string } | null;
 };
 
+const STATUS_STYLE: Record<string, { bg: string; color: string }> = {
+  requested:  { bg: "#FEF3C7", color: "#B45309" },
+  confirmed:  { bg: "#E8F5F0", color: "#2E7D62" },
+  completed:  { bg: "#E8F5F0", color: "#2E7D62" },
+  rejected:   { bg: "#FEE2E2", color: "#EF4444" },
+  cancelled:  { bg: "#F3F4F6", color: "#6B7280" },
+};
+
 function BookingCard({
   booking,
   viewAs,
@@ -149,69 +154,96 @@ function BookingCard({
   currentUserId: string;
 }) {
   const item = booking.item;
-  const statusColor =
-    BOOKING_STATUS_COLORS[booking.status as keyof typeof BOOKING_STATUS_COLORS] ??
-    "bg-gray-100 text-gray-500";
+  const s = STATUS_STYLE[booking.status] ?? { bg: "#F3F4F6", color: "#6B7280" };
+  const statusBg = s.bg;
+  const statusColor = s.color;
   const statusLabel =
     BOOKING_STATUS_LABELS[booking.status as keyof typeof BOOKING_STATUS_LABELS] ??
     booking.status;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <div className="flex items-start gap-4 p-4">
-        {/* Thumbnail */}
-        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-          {item?.images?.[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.images[0]}
-              alt={item.title}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-gray-300 text-xl">
-              📦
-            </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <Link
-              href={`/items/${item?.id}`}
-              className="font-medium text-gray-900 hover:text-emerald-700 truncate"
-            >
-              {item?.title ?? "Inserat"}
-            </Link>
-            <span
-              className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor}`}
-            >
-              {statusLabel}
-            </span>
-          </div>
-          <p className="mt-0.5 text-sm text-gray-500">
-            {formatDate(booking.start_date)} – {formatDate(booking.end_date)}
-          </p>
-          {viewAs === "owner" && booking.borrower && (
-            <p className="text-xs text-gray-400">
-              Von: {booking.borrower.name}
-            </p>
-          )}
-          {booking.message && (
-            <p className="mt-1 text-xs text-gray-500 line-clamp-1">
-              &bdquo;{booking.message}&ldquo;
-            </p>
-          )}
-        </div>
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 12,
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        padding: 16,
+        display: "flex",
+        gap: 16,
+        alignItems: "center",
+      }}
+    >
+      {/* Icon */}
+      <div
+        style={{
+          width: 52,
+          height: 52,
+          borderRadius: 10,
+          background: "#F3F4F6",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 26,
+          flexShrink: 0,
+          overflow: "hidden",
+        }}
+      >
+        {item?.images?.[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.images[0]}
+            alt={item.title ?? ""}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          "📦"
+        )}
       </div>
 
-      {/* Aktionen für Vermieter bei pending-Anfragen */}
-      {viewAs === "owner" && booking.status === "requested" && (
-        <div className="border-t border-gray-100 px-4 py-3">
-          <BookingActionButtons bookingId={booking.id} />
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <Link
+          href={`/items/${item?.id}`}
+          style={{ fontSize: 15, fontWeight: 600, color: "#111827", textDecoration: "none", display: "block", marginBottom: 4 }}
+        >
+          {item?.title ?? "Inserat"}
+        </Link>
+        <div style={{ fontSize: 13, color: "#9CA3AF" }}>
+          {formatDate(booking.start_date)} – {formatDate(booking.end_date)}
         </div>
-      )}
+        {viewAs === "owner" && booking.borrower && (
+          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+            Von: {booking.borrower.name}
+          </div>
+        )}
+        {booking.message && (
+          <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            &bdquo;{booking.message}&ldquo;
+          </div>
+        )}
+      </div>
+
+      {/* Right: badge + amount */}
+      <div style={{ textAlign: "right", flexShrink: 0 }}>
+        <span
+          style={{
+            display: "block",
+            padding: "3px 10px",
+            borderRadius: 20,
+            fontSize: 12,
+            fontWeight: 600,
+            marginBottom: 6,
+            textAlign: "center",
+            background: statusBg,
+            color: statusColor,
+          }}
+        >
+          {statusLabel}
+        </span>
+        {viewAs === "owner" && booking.status === "requested" && (
+          <BookingActionButtons bookingId={booking.id} />
+        )}
+      </div>
     </div>
   );
 }

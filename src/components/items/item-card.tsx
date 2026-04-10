@@ -3,6 +3,18 @@ import Image from "next/image";
 import { CATEGORY_LABELS, CATEGORY_ICONS } from "@/lib/constants";
 import { formatPrice } from "@/lib/utils";
 import type { Item } from "@/types";
+import type { Category } from "@/types";
+
+const CATEGORY_BG: Record<Category, string> = {
+  werkzeug:  "#E8F5F0",
+  camping:   "#EFF6FF",
+  musik:     "#FDF4FF",
+  sport:     "#F0FDF4",
+  foto_video:"#FFF7ED",
+  kueche:    "#FFFBEB",
+  garten:    "#FFF1F2",
+  party:     "#FEF3C7",
+};
 
 interface ItemCardProps {
   item: Item;
@@ -38,7 +50,7 @@ export function ItemCard({ item }: ItemCardProps) {
         style={{
           width: "100%",
           height: 168,
-          background: "#E5E7EB",
+          background: item.images?.length > 0 ? "#E5E7EB" : (CATEGORY_BG[item.category] ?? "#E5E7EB"),
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

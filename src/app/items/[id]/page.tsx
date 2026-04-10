@@ -129,7 +129,7 @@ export default async function ItemDetailPage({ params }: Props) {
             {/* Info */}
             <div style={{ marginTop: 24 }}>
               {/* Meta row */}
-              <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 16, flexWrap: "wrap" }}>
                 <span style={{ background: "#E8F5F0", color: "#2E7D62", padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
                   ✓ Verfügbar
                 </span>
@@ -146,7 +146,7 @@ export default async function ItemDetailPage({ params }: Props) {
                 )}
               </div>
 
-              <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 12, color: "#111827" }}>{item.title}</h1>
+              <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 8, color: "#111827" }}>{item.title}</h1>
 
               {item.location && (
                 <p style={{ fontSize: 14, color: "#6B7280", marginBottom: 12 }}>📍 {item.location}</p>
