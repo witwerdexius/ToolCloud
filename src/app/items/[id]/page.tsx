@@ -5,7 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, CATEGORY_ICONS } from "@/lib/constants";
 import { formatPrice, formatDate } from "@/lib/utils";
 import { BookingForm } from "@/components/booking/booking-form";
-import type { Item, User } from "@/types";
+import { AvailabilityCalendar } from "@/components/items/availability-calendar";
+import type { Item, User, DateRange } from "@/types";
 
 interface Props {
   params: { id: string };
@@ -38,6 +39,24 @@ export default async function ItemDetailPage({ params }: Props) {
 
   const isOwner = authUser?.id === item.owner_id;
   const owner = item.owner as User;
+
+  // Verfügbarkeits-Daten laden: Buchungen + Eigentümer-Sperren
+  const [{ data: bookedData }, { data: blockedData }] = await Promise.all([
+    supabase
+      .from("bookings")
+      .select("start_date, end_date")
+      .eq("item_id", params.id)
+      .in("status", ["requested", "confirmed"]),
+    supabase
+      .from("item_availability")
+      .select("start_date, end_date")
+      .eq("item_id", params.id),
+  ]);
+
+  const blockedRanges: DateRange[] = [
+    ...(bookedData ?? []).map((b) => ({ start: b.start_date, end: b.end_date, type: "booked" as const })),
+    ...(blockedData ?? []).map((b) => ({ start: b.start_date, end: b.end_date, type: "blocked" as const })),
+  ];
 
   // Reviews über den Owner dieses Inserats
   const { data: reviews } = await supabase
@@ -335,7 +354,7 @@ export default async function ItemDetailPage({ params }: Props) {
                   Das ist dein eigenes Inserat.
                 </div>
               ) : authUser ? (
-                <BookingForm item={item as Item} />
+                <BookingForm item={item as Item} blockedRanges={blockedRanges} />
               ) : (
                 <div style={{ textAlign: "center" }}>
                   <p style={{ marginBottom: 12, fontSize: 14, color: "#6B7280" }}>
@@ -361,18 +380,10 @@ export default async function ItemDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Availability hint */}
+              {/* Availability calendar */}
               <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #E5E7EB" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: "#374151" }}>Verfügbarkeit</div>
-                <div style={{ fontSize: 12, color: "#9CA3AF" }}>
-                  <span style={{ display: "inline-block", width: 10, height: 10, background: "#E8F5F0", borderRadius: 2, marginRight: 4 }} />
-                  Verfügbar
-                  <span style={{ display: "inline-block", width: 10, height: 10, background: "#E5E7EB", borderRadius: 2, margin: "0 4px 0 12px" }} />
-                  Belegt
-                </div>
-                <div style={{ background: "#F9FAFB", borderRadius: 8, padding: 12, marginTop: 8, textAlign: "center", fontSize: 12, color: "#9CA3AF" }}>
-                  Kalenderansicht folgt im nächsten Iteration
-                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: "#374151" }}>Verfügbarkeit</div>
+                <AvailabilityCalendar blockedRanges={blockedRanges} />
               </div>
             </div>
           </div>

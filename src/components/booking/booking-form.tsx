@@ -3,13 +3,23 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatPrice, calcTotalPrice } from "@/lib/utils";
-import type { Item } from "@/types";
+import { AvailabilityCalendar } from "@/components/items/availability-calendar";
+import type { Item, DateRange } from "@/types";
 
 interface BookingFormProps {
   item: Item;
+  blockedRanges?: DateRange[];
 }
 
-export function BookingForm({ item }: BookingFormProps) {
+function rangesOverlap(start: string, end: string, ranges: DateRange[]): boolean {
+  for (const r of ranges) {
+    // Überlappung: start <= r.end && end >= r.start
+    if (start <= r.end && end >= r.start) return true;
+  }
+  return false;
+}
+
+export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
   const router = useRouter();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -34,6 +44,17 @@ export function BookingForm({ item }: BookingFormProps) {
     }
     if (endDate <= startDate) {
       setError("Enddatum muss nach dem Startdatum liegen.");
+      return;
+    }
+    if (rangesOverlap(startDate, endDate, blockedRanges)) {
+      const hasBooked = blockedRanges.some(
+        (r) => r.type === "booked" && startDate <= r.end && endDate >= r.start
+      );
+      setError(
+        hasBooked
+          ? "Das Werkzeug ist in diesem Zeitraum bereits gebucht."
+          : "Das Werkzeug ist in diesem Zeitraum nicht verfügbar."
+      );
       return;
     }
 
@@ -95,7 +116,7 @@ export function BookingForm({ item }: BookingFormProps) {
             type="date"
             min={today}
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={(e) => { setStartDate(e.target.value); setError(null); }}
             style={inputStyle}
             onFocus={(e) => (e.target.style.borderColor = "#2E7D62")}
             onBlur={(e) => (e.target.style.borderColor = "#E5E7EB")}
@@ -107,13 +128,24 @@ export function BookingForm({ item }: BookingFormProps) {
             type="date"
             min={startDate || today}
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={(e) => { setEndDate(e.target.value); setError(null); }}
             style={inputStyle}
             onFocus={(e) => (e.target.style.borderColor = "#2E7D62")}
             onBlur={(e) => (e.target.style.borderColor = "#E5E7EB")}
           />
         </div>
       </div>
+
+      {/* Mini-Kalender (zeigt gewählten Zeitraum + Sperren) */}
+      {blockedRanges.length > 0 && (
+        <div style={{ marginBottom: 16, padding: 12, background: "#F9FAFB", borderRadius: 8, border: "1px solid #F3F4F6" }}>
+          <AvailabilityCalendar
+            blockedRanges={blockedRanges}
+            selectedStart={startDate}
+            selectedEnd={endDate}
+          />
+        </div>
+      )}
 
       {/* Message */}
       <label style={labelStyle}>Nachricht an den Vermieter (optional)</label>

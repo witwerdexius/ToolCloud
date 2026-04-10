@@ -84,6 +84,22 @@ export interface Message {
   created_at: string;
 }
 
+export interface ItemAvailability {
+  id: string;
+  item_id: string;
+  start_date: string;  // YYYY-MM-DD
+  end_date: string;    // YYYY-MM-DD
+  note?: string;
+  created_at: string;
+}
+
+// Zusammengefasste Sperrdaten für Kalender-Komponenten
+export interface DateRange {
+  start: string;  // YYYY-MM-DD
+  end: string;    // YYYY-MM-DD
+  type: "booked" | "blocked";  // booked = Buchung, blocked = Eigentümer-Sperre
+}
+
 // ─── API / Form Typen ──────────────────────────────────────────────────────────
 
 export interface SearchFilters {

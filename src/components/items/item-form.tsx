@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ImageUpload } from "@/components/items/image-upload";
+import { AvailabilityManager } from "@/components/items/availability-manager";
 import type { Item } from "@/types";
 
 interface ItemFormProps {
@@ -249,6 +250,17 @@ export function ItemForm({ userId, item }: ItemFormProps) {
           }
         />
       </div>
+
+      {/* Verfügbarkeit – nur im Bearbeitungsmodus, da Item-ID bekannt sein muss */}
+      {item && (
+        <div>
+          <Label>Verfügbarkeit / Sperrzeiten</Label>
+          <p className="mb-2 text-xs text-gray-500">
+            Zeiträume, in denen das Inserat nicht verfügbar ist (z. B. Urlaub, Reparatur).
+          </p>
+          <AvailabilityManager itemId={item.id} />
+        </div>
+      )}
 
       {serverError && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">

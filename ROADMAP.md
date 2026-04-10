@@ -45,7 +45,7 @@
 
 - [ ] Gegenstand einstellen (Formular mit Validierung via Zod)
 - [ ] Bilder hochladen (Supabase Storage)
-- [ ] Verfügbarkeits-Kalender setzen
+- [x] Verfügbarkeits-Kalender setzen
 - [ ] Preis & Kaution konfigurieren
 - [ ] Inserat bearbeiten / deaktivieren
 

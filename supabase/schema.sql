@@ -165,6 +165,22 @@ CREATE TRIGGER after_review_insert
   FOR EACH ROW EXECUTE FUNCTION update_user_rating();
 
 
+-- ─── ITEM AVAILABILITY (Eigentümer-definierte Sperrzeiten) ───────────────────
+
+CREATE TABLE item_availability (
+  id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  item_id    UUID NOT NULL REFERENCES items(id) ON DELETE CASCADE,
+  start_date DATE NOT NULL,
+  end_date   DATE NOT NULL,
+  note       TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+
+  CONSTRAINT valid_date_range CHECK (end_date >= start_date)
+);
+
+CREATE INDEX item_availability_item_idx ON item_availability(item_id);
+
+
 -- ─── MESSAGES ─────────────────────────────────────────────────────────────────
 
 CREATE TABLE messages (
@@ -213,6 +229,13 @@ CREATE POLICY "Beteiligte können Status ändern" ON bookings FOR UPDATE
 CREATE POLICY "Reviews sind öffentlich" ON reviews FOR SELECT USING (TRUE);
 CREATE POLICY "Nur Reviewer kann schreiben" ON reviews FOR INSERT
   WITH CHECK (auth.uid() = reviewer_id);
+
+-- Item Availability: Öffentlich lesbar, nur Eigentümer kann schreiben
+ALTER TABLE item_availability ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Verfügbarkeiten sind öffentlich lesbar" ON item_availability FOR SELECT USING (TRUE);
+CREATE POLICY "Eigentümer kann Verfügbarkeiten verwalten" ON item_availability FOR ALL
+  USING (auth.uid() IN (SELECT owner_id FROM items WHERE id = item_id))
+  WITH CHECK (auth.uid() IN (SELECT owner_id FROM items WHERE id = item_id));
 
 -- Messages: Nur Sender und Empfänger
 CREATE POLICY "Nur Beteiligte sehen Nachrichten" ON messages FOR SELECT
