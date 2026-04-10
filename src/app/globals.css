@@ -60,3 +60,10 @@ body {
 @media (max-width: 640px) {
   .profile-stats-row { gap: 16px !important; }
 }
+
+/* Hero text max-width */
+.hero-text {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -21,18 +21,6 @@ export function FilterBar() {
   return (
     <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
       {/* Umkreis – Platzhalter, bis Geo-Daten verfügbar (Phase 2) */}
-      <select
-        disabled
-        title="Umkreis-Filter folgt in Phase 2"
-        style={{
-          padding: "8px 14px", border: "1.5px solid #E5E7EB", borderRadius: 8,
-          fontSize: 13, color: "#9CA3AF", background: "#F9FAFB",
-          cursor: "not-allowed", outline: "none",
-        }}
-      >
-        <option>📍 Umkreis: 10 km</option>
-      </select>
-
       {/* Preis-Filter */}
       <select
         value={maxPrice}
@@ -43,10 +31,10 @@ export function FilterBar() {
           cursor: "pointer", outline: "none",
         }}
       >
-        <option value="">💶 Alle Preise</option>
-        <option value="0">💶 Kostenlos</option>
-        <option value="5">💶 Bis 5 €/Tag</option>
-        <option value="15">💶 Bis 15 €/Tag</option>
+        <option value="">Alle Preise</option>
+        <option value="0">Kostenlos</option>
+        <option value="5">Bis 5 € / Tag</option>
+        <option value="15">Bis 15 € / Tag</option>
       </select>
     </div>
   );

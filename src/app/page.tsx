@@ -79,8 +79,17 @@ async function ItemGrid({ q, category, sort, max_price }: { q?: string; category
         </p>
         <Link
           href="/items/new"
-          className="mt-4 inline-block rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors"
-          style={{ background: "#2E7D62" }}
+          style={{
+            display: "inline-block",
+            marginTop: 16,
+            borderRadius: 10,
+            padding: "10px 20px",
+            fontSize: 14,
+            fontWeight: 600,
+            color: "#fff",
+            background: "#2E7D62",
+            textDecoration: "none",
+          }}
         >
           Inserat erstellen
         </Link>
@@ -107,7 +116,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
         <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>
           Leihen statt kaufen.<br />Gemeinsam mehr.
         </h1>
-        <p style={{ fontSize: 17, opacity: 0.88, marginBottom: 32 }}>
+        <p className="hero-text" style={{ fontSize: 17, opacity: 0.88, marginBottom: 32 }}>
           Finde Gegenstände in deiner Nähe – von Menschen, denen du vertrauen kannst.
         </p>
         <Suspense>

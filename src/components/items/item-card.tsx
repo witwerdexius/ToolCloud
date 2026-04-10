@@ -37,6 +37,7 @@ export function ItemCard({ item }: ItemCardProps) {
         background: "#fff",
         borderRadius: 12,
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        border: "1px solid #F3F4F6",
         overflow: "hidden",
         cursor: "pointer",
         display: "block",
@@ -75,15 +76,15 @@ export function ItemCard({ item }: ItemCardProps) {
             position: "absolute",
             top: 10,
             left: 10,
-            background: "#E8F5F0",
-            color: "#2E7D62",
+            background: item.is_active ? "#E8F5F0" : "#F3F4F6",
+            color: item.is_active ? "#2E7D62" : "#9CA3AF",
             padding: "3px 10px",
             borderRadius: 20,
             fontSize: 12,
             fontWeight: 600,
           }}
         >
-          {item.is_active ? "Verfügbar" : "Nicht verfügbar"}
+          {item.is_active ? "Verfügbar" : "Inaktiv"}
         </span>
       </div>
 

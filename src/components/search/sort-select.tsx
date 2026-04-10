@@ -27,9 +27,9 @@ export function SortSelect({ defaultValue }: { defaultValue: string }) {
         outline: "none",
       }}
     >
-      <option value="newest">⭐ Sortierung: Empfohlen</option>
-      <option value="rating">⭐ Beste Bewertung</option>
-      <option value="price_asc">💶 Günstiger zuerst</option>
+      <option value="newest">Sortierung: Empfohlen</option>
+      <option value="rating">Beste Bewertung</option>
+      <option value="price_asc">Günstiger zuerst</option>
     </select>
   );
 }
