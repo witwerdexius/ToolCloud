@@ -1,6 +1,6 @@
 {
   "name": "toolcloud",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "setup-hooks": "bash scripts/setup-hooks.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
