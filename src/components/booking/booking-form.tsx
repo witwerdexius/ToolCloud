@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { formatPrice, calcTotalPrice } from "@/lib/utils";
 import type { Item } from "@/types";
 
@@ -69,88 +65,152 @@ export function BookingForm({ item }: BookingFormProps) {
     }
   }
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "10px 14px",
+    border: "1.5px solid #E5E7EB",
+    borderRadius: 8,
+    fontSize: 14,
+    outline: "none",
+    color: "#111827",
+    transition: "border-color .15s",
+    background: "#fff",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#374151",
+    marginBottom: 6,
+    display: "block",
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
+    <form onSubmit={handleSubmit}>
+      {/* Date row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
         <div>
-          <Label htmlFor="start_date" required>
-            Von
-          </Label>
-          <Input
-            id="start_date"
+          <label style={labelStyle}>Von</label>
+          <input
             type="date"
             min={today}
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
+            style={inputStyle}
+            onFocus={(e) => (e.target.style.borderColor = "#2E7D62")}
+            onBlur={(e) => (e.target.style.borderColor = "#E5E7EB")}
           />
         </div>
         <div>
-          <Label htmlFor="end_date" required>
-            Bis
-          </Label>
-          <Input
-            id="end_date"
+          <label style={labelStyle}>Bis</label>
+          <input
             type="date"
             min={startDate || today}
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
+            style={inputStyle}
+            onFocus={(e) => (e.target.style.borderColor = "#2E7D62")}
+            onBlur={(e) => (e.target.style.borderColor = "#E5E7EB")}
           />
         </div>
       </div>
 
-      {/* Preisberechnung */}
+      {/* Message */}
+      <label style={labelStyle}>Nachricht an den Vermieter (optional)</label>
+      <textarea
+        rows={3}
+        placeholder="Wofür brauchst du das Werkzeug?"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        style={{ ...inputStyle, resize: "none", marginBottom: 0 }}
+        onFocus={(e) => (e.target.style.borderColor = "#2E7D62")}
+        onBlur={(e) => (e.target.style.borderColor = "#E5E7EB")}
+      />
+
+      {/* Price summary */}
       {priceCalc && (
-        <div className="rounded-xl bg-gray-50 p-3 text-sm space-y-1">
+        <div
+          style={{
+            background: "#F9FAFB",
+            borderRadius: 8,
+            padding: 14,
+            margin: "16px 0",
+            fontSize: 13,
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+          }}
+        >
           {item.price_per_day ? (
             <>
-              <div className="flex justify-between text-gray-600">
-                <span>
-                  {formatPrice(item.price_per_day)} × {priceCalc.days} Tag
-                  {priceCalc.days !== 1 ? "e" : ""}
-                </span>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span>{formatPrice(item.price_per_day)} × {priceCalc.days} Tag{priceCalc.days !== 1 ? "e" : ""}</span>
                 <span>{formatPrice(priceCalc.rentalCost)}</span>
               </div>
               {priceCalc.deposit > 0 && (
-                <div className="flex justify-between text-gray-600">
-                  <span>Kaution</span>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Kaution (wird zurückerstattet)</span>
                   <span>{formatPrice(priceCalc.deposit)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-gray-600">
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Servicegebühr</span>
                 <span>{formatPrice(priceCalc.serviceFee)}</span>
               </div>
-              <div className="flex justify-between font-semibold text-gray-900 border-t border-gray-200 pt-1 mt-1">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontWeight: 700,
+                  borderTop: "1px solid #E5E7EB",
+                  paddingTop: 8,
+                  marginTop: 4,
+                  color: "#111827",
+                }}
+              >
                 <span>Gesamt</span>
                 <span>{formatPrice(priceCalc.total)}</span>
               </div>
             </>
           ) : (
-            <p className="text-emerald-700 font-medium">Kostenlos · {priceCalc.days} Tag{priceCalc.days !== 1 ? "e" : ""}</p>
+            <p style={{ color: "#2E7D62", fontWeight: 600 }}>
+              Kostenlos · {priceCalc.days} Tag{priceCalc.days !== 1 ? "e" : ""}
+            </p>
           )}
         </div>
       )}
 
-      <div>
-        <Label htmlFor="message">Nachricht an den Vermieter</Label>
-        <Textarea
-          id="message"
-          rows={3}
-          placeholder="Kurze Vorstellung, Verwendungszweck …"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </div>
-
       {error && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+        <p style={{ background: "#FEE2E2", borderRadius: 8, padding: "8px 12px", fontSize: 13, color: "#EF4444", margin: "8px 0" }}>
           {error}
         </p>
       )}
 
-      <Button type="submit" size="lg" loading={loading} className="w-full">
-        Anfrage senden
-      </Button>
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "12px 20px",
+          borderRadius: 8,
+          fontSize: 14,
+          fontWeight: 600,
+          background: loading ? "#9CA3AF" : "#2E7D62",
+          color: "#fff",
+          border: "none",
+          cursor: loading ? "not-allowed" : "pointer",
+          transition: "background .15s",
+          marginTop: 16,
+        }}
+      >
+        {loading ? "Wird gesendet …" : "Buchung anfragen"}
+      </button>
+      <p style={{ textAlign: "center", fontSize: 12, color: "#9CA3AF", marginTop: 10 }}>
+        Du wirst noch nicht belastet.
+      </p>
     </form>
   );
 }

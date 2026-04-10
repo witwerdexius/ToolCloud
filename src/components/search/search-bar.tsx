@@ -21,18 +21,83 @@ export function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        maxWidth: 640,
+        margin: "0 auto",
+        background: "#fff",
+        borderRadius: 14,
+        display: "flex",
+        alignItems: "center",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+        overflow: "hidden",
+      }}
+    >
       <input
         ref={inputRef}
         type="search"
         defaultValue={searchParams.get("q") ?? ""}
-        placeholder="Werkzeug, Zelt, Gitarre …"
-        className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+        placeholder="Was suchst du? z. B. Bohrmaschine, Zelt …"
+        style={{
+          flex: 1,
+          border: "none",
+          outline: "none",
+          padding: "16px 20px",
+          fontSize: 15,
+          color: "#111827",
+          background: "transparent",
+        }}
       />
+      {/* Divider */}
+      <div style={{ width: 1, height: 32, background: "#E5E7EB", flexShrink: 0 }} />
+      {/* Location */}
+      <button
+        type="button"
+        style={{
+          border: "none",
+          outline: "none",
+          padding: "16px",
+          fontSize: 14,
+          color: "#6B7280",
+          background: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          whiteSpace: "nowrap",
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        Berlin
+      </button>
+      {/* Search button */}
       <button
         type="submit"
-        className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700 transition-colors shadow-sm"
+        style={{
+          background: "#2E7D62",
+          border: "none",
+          cursor: "pointer",
+          padding: "14px 22px",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          color: "#fff",
+          fontSize: 15,
+          fontWeight: 600,
+          transition: "background .15s",
+          flexShrink: 0,
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.background = "#1e6b50")}
+        onMouseOut={(e) => (e.currentTarget.style.background = "#2E7D62")}
       >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
         Suchen
       </button>
     </form>

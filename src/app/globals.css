@@ -3,14 +3,60 @@
 @tailwind utilities;
 
 :root {
-  --green: #2E7D62;
-  --green-light: #3FA882;
+  --green:      #2E7D62;
+  --green-light:#3FA882;
+  --green-pale: #E8F5F0;
+  --green-mid:  #C3E8DB;
+  --accent:     #F59E0B;
+  --accent-lt:  #FEF3C7;
+  --red:        #EF4444;
+  --radius:     12px;
+  --shadow:     0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.12);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 body {
   background-color: #F9FAFB;
+  color: #111827;
+  min-height: 100vh;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Item card hover */
+.item-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+
+/* Back button hover */
+.back-btn-hover:hover { color: #2E7D62 !important; }
+
+/* Detail page responsive grid */
+@media (max-width: 700px) {
+  .detail-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Add item button hover */
+.add-item-hover:hover {
+  border-color: #2E7D62 !important;
+  color: #2E7D62 !important;
+  background: #E8F5F0 !important;
+}
+
+/* Profile stats responsive */
+@media (max-width: 640px) {
+  .profile-stats-row { gap: 16px !important; }
 }

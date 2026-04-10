@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
@@ -39,139 +39,271 @@ export default async function ItemDetailPage({ params }: Props) {
   const isOwner = authUser?.id === item.owner_id;
   const owner = item.owner as User;
 
+  const ownerInitials = owner?.name
+    ? owner.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
+
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-5xl px-4 py-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Linke Spalte: Bilder + Details */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Bildergalerie */}
-            <div className="overflow-hidden rounded-2xl bg-gray-100">
+    <main style={{ minHeight: "100vh", background: "#fff" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "28px 24px 60px" }}>
+        {/* Back button */}
+        <Link
+          href="/"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            color: "#6B7280",
+            fontSize: 14,
+            cursor: "pointer",
+            background: "none",
+            border: "none",
+            marginBottom: 20,
+            padding: 0,
+            textDecoration: "none",
+            transition: "color .15s",
+          }}
+          className="back-btn-hover"
+        >
+          ← Zurück zur Suche
+        </Link>
+
+        {/* Two-column grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 40 }} className="detail-grid-responsive">
+          {/* Left column */}
+          <div>
+            {/* Gallery */}
+            <div
+              style={{
+                background: "#F3F4F6",
+                borderRadius: 12,
+                height: 340,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 100,
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
               {item.images?.length > 0 ? (
-                <div className="grid gap-1" style={{ gridTemplateColumns: item.images.length > 1 ? "2fr 1fr" : "1fr" }}>
-                  <div className="relative aspect-[4/3]">
-                    <Image
-                      src={item.images[0]}
-                      alt={item.title}
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                  {item.images.length > 1 && (
-                    <div className="grid gap-1">
-                      {item.images.slice(1, 3).map((url: string, i: number) => (
-                        <div key={i} className="relative aspect-[4/3]">
-                          <Image src={url} alt={item.title} fill className="object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <Image
+                  src={item.images[0]}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
               ) : (
-                <div className="flex aspect-[16/9] items-center justify-center text-6xl text-gray-200">
-                  {CATEGORY_ICONS[item.category as keyof typeof CATEGORY_ICONS]}
-                </div>
+                <span>{CATEGORY_ICONS[item.category as keyof typeof CATEGORY_ICONS]}</span>
               )}
             </div>
 
-            {/* Titel + Meta */}
-            <div>
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <span className="mb-2 inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-                    {CATEGORY_ICONS[item.category as keyof typeof CATEGORY_ICONS]}{" "}
-                    {CATEGORY_LABELS[item.category as keyof typeof CATEGORY_LABELS]}
-                  </span>
-                  <h1 className="text-2xl font-bold text-gray-900">{item.title}</h1>
-                  {item.location && (
-                    <p className="mt-1 text-sm text-gray-500">📍 {item.location}</p>
-                  )}
-                </div>
-                {isOwner && (
-                  <Link
-                    href={`/items/${item.id}/edit`}
-                    className="shrink-0 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+            {/* Thumbnails */}
+            {item.images?.length > 1 && (
+              <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+                {item.images.slice(0, 4).map((url: string, i: number) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: 72,
+                      height: 56,
+                      borderRadius: 8,
+                      background: "#E5E7EB",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 22,
+                      cursor: "pointer",
+                      border: i === 0 ? "2px solid #2E7D62" : "2px solid transparent",
+                      overflow: "hidden",
+                      position: "relative",
+                    }}
                   >
-                    Bearbeiten
-                  </Link>
+                    <Image src={url} alt="" fill className="object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Info */}
+            <div style={{ marginTop: 24 }}>
+              {/* Meta row */}
+              <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
+                <span style={{ background: "#E8F5F0", color: "#2E7D62", padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
+                  ✓ Verfügbar
+                </span>
+                <span style={{ background: "#F3F4F6", color: "#6B7280", padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
+                  {CATEGORY_ICONS[item.category as keyof typeof CATEGORY_ICONS]}{" "}
+                  {CATEGORY_LABELS[item.category as keyof typeof CATEGORY_LABELS]}
+                </span>
+                {item.review_count > 0 && (
+                  <div style={{ color: "#F59E0B", fontSize: 14, display: "flex", alignItems: "center", gap: 4 }}>
+                    ★★★★★
+                    <strong style={{ marginLeft: 4, color: "#111827" }}>{item.rating.toFixed(1)}</strong>
+                    <span style={{ color: "#9CA3AF", fontSize: 13 }}>({item.review_count} Bewertungen)</span>
+                  </div>
                 )}
               </div>
 
+              <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 12, color: "#111827" }}>{item.title}</h1>
+
+              {item.location && (
+                <p style={{ fontSize: 14, color: "#6B7280", marginBottom: 12 }}>📍 {item.location}</p>
+              )}
+
               {item.description && (
-                <p className="mt-4 text-sm leading-relaxed text-gray-700">
+                <p style={{ fontSize: 15, lineHeight: 1.7, color: "#374151", marginBottom: 20 }}>
                   {item.description}
                 </p>
               )}
-            </div>
 
-            {/* Vermieter-Info */}
-            {owner && (
-              <div className="rounded-2xl border border-gray-100 bg-white p-5">
-                <h2 className="mb-3 text-sm font-semibold text-gray-900">
-                  Angeboten von
-                </h2>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-700">
-                    {owner.name.charAt(0).toUpperCase()}
+              {isOwner && (
+                <Link
+                  href={`/items/${item.id}/edit`}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "10px 20px",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    background: "#F3F4F6",
+                    color: "#374151",
+                    textDecoration: "none",
+                    marginBottom: 20,
+                  }}
+                >
+                  Bearbeiten
+                </Link>
+              )}
+
+              {/* Owner card */}
+              {owner && (
+                <div
+                  style={{
+                    background: "#F9FAFB",
+                    borderRadius: 12,
+                    padding: 16,
+                    display: "flex",
+                    gap: 14,
+                    alignItems: "center",
+                    marginBottom: 24,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background: "#2E7D62",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      fontSize: 18,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {ownerInitials}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{owner.name}</p>
-                    {owner.location && (
-                      <p className="text-xs text-gray-400">📍 {owner.location}</p>
-                    )}
-                    {owner.review_count > 0 && (
-                      <p className="text-xs text-gray-500">
-                        ★ {owner.rating.toFixed(1)} · {owner.review_count} Bewertung
-                        {owner.review_count !== 1 ? "en" : ""}
-                      </p>
-                    )}
-                    <p className="text-xs text-gray-400">
-                      Dabei seit {formatDate(owner.created_at)}
-                    </p>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#111827" }}>{owner.name}</div>
+                    <div style={{ fontSize: 13, color: "#9CA3AF" }}>
+                      {owner.review_count > 0 && `⭐ ${owner.rating.toFixed(1)} · `}
+                      Mitglied seit {formatDate(owner.created_at)}
+                    </div>
                   </div>
+                  <Link
+                    href="/messages"
+                    style={{
+                      marginLeft: "auto",
+                      padding: "6px 12px",
+                      borderRadius: 8,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      background: "#F3F4F6",
+                      color: "#374151",
+                      textDecoration: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Nachricht
+                  </Link>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          {/* Rechte Spalte: Buchungs-Box */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-20 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-              {/* Preis */}
-              <div className="mb-4">
-                <p className="text-2xl font-bold text-gray-900">
-                  {formatPrice(item.price_per_day)}
-                  {item.price_per_day && (
-                    <span className="text-base font-normal text-gray-500"> / Tag</span>
-                  )}
-                </p>
-                {item.deposit && (
-                  <p className="text-sm text-gray-500">
-                    Kaution: {formatPrice(item.deposit)}
-                  </p>
-                )}
+          {/* Right column – Booking box */}
+          <div>
+            <div
+              style={{
+                background: "#fff",
+                border: "1.5px solid #E5E7EB",
+                borderRadius: 12,
+                padding: 24,
+                position: "sticky",
+                top: 80,
+              }}
+            >
+              <div style={{ fontSize: 28, fontWeight: 800, color: "#2E7D62", marginBottom: 4 }}>
+                {formatPrice(item.price_per_day)}
+                <span style={{ fontSize: 14, fontWeight: 400, color: "#9CA3AF" }}> / Tag</span>
               </div>
+              {item.deposit && (
+                <div style={{ fontSize: 13, color: "#9CA3AF", marginBottom: 20 }}>
+                  Kaution: {formatPrice(item.deposit)}
+                </div>
+              )}
 
               {isOwner ? (
-                <div className="rounded-xl bg-gray-50 p-4 text-center text-sm text-gray-500">
+                <div style={{ background: "#F9FAFB", borderRadius: 8, padding: 16, textAlign: "center", fontSize: 14, color: "#6B7280" }}>
                   Das ist dein eigenes Inserat.
                 </div>
               ) : authUser ? (
                 <BookingForm item={item as Item} />
               ) : (
-                <div className="text-center">
-                  <p className="mb-3 text-sm text-gray-500">
+                <div style={{ textAlign: "center" }}>
+                  <p style={{ marginBottom: 12, fontSize: 14, color: "#6B7280" }}>
                     Melde dich an, um eine Buchungsanfrage zu senden.
                   </p>
                   <Link
                     href={`/auth/login?next=/items/${item.id}`}
-                    className="block w-full rounded-xl bg-emerald-600 py-2.5 text-center text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      borderRadius: 8,
+                      background: "#2E7D62",
+                      padding: "12px 0",
+                      textAlign: "center",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#fff",
+                      textDecoration: "none",
+                    }}
                   >
                     Anmelden
                   </Link>
                 </div>
               )}
+
+              {/* Availability hint */}
+              <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #E5E7EB" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: "#374151" }}>Verfügbarkeit</div>
+                <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+                  <span style={{ display: "inline-block", width: 10, height: 10, background: "#E8F5F0", borderRadius: 2, marginRight: 4 }} />
+                  Verfügbar
+                  <span style={{ display: "inline-block", width: 10, height: 10, background: "#E5E7EB", borderRadius: 2, margin: "0 4px 0 12px" }} />
+                  Belegt
+                </div>
+                <div style={{ background: "#F9FAFB", borderRadius: 8, padding: 12, marginTop: 8, textAlign: "center", fontSize: 12, color: "#9CA3AF" }}>
+                  Kalenderansicht folgt im nächsten Iteration
+                </div>
+              </div>
             </div>
           </div>
         </div>

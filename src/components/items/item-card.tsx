@@ -8,63 +8,98 @@ interface ItemCardProps {
   item: Item;
 }
 
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div style={{ color: "#F59E0B", fontSize: 14, display: "flex", alignItems: "center", gap: 3 }}>
+      {"★".repeat(Math.round(rating))}{"☆".repeat(5 - Math.round(rating))}
+      <span style={{ color: "#9CA3AF", fontSize: 12 }}>{rating.toFixed(1)}</span>
+    </div>
+  );
+}
+
 export function ItemCard({ item }: ItemCardProps) {
   return (
     <Link
       href={`/items/${item.id}`}
-      className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow"
+      style={{
+        background: "#fff",
+        borderRadius: 12,
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        overflow: "hidden",
+        cursor: "pointer",
+        display: "block",
+        textDecoration: "none",
+        transition: "transform .2s, box-shadow .2s",
+      }}
+      className="item-card-hover"
     >
-      {/* Bild */}
-      <div className="relative aspect-[4/3] bg-gray-100">
-        {item.images.length > 0 ? (
+      {/* Image area */}
+      <div
+        style={{
+          width: "100%",
+          height: 168,
+          background: "#E5E7EB",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 52,
+          position: "relative",
+        }}
+      >
+        {item.images?.length > 0 ? (
           <Image
             src={item.images[0]}
             alt={item.title}
             fill
-            className="object-cover transition-transform group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl text-gray-300">
-            {CATEGORY_ICONS[item.category]}
-          </div>
+          <span>{CATEGORY_ICONS[item.category]}</span>
         )}
-        {/* Preis-Badge */}
-        <div className="absolute bottom-2 right-2 rounded-lg bg-white/90 px-2 py-1 text-sm font-semibold text-gray-900 backdrop-blur-sm shadow-sm">
-          {formatPrice(item.price_per_day)}
-          {item.price_per_day && (
-            <span className="text-xs font-normal text-gray-500"> /Tag</span>
-          )}
-        </div>
+        {/* Availability badge */}
+        <span
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 10,
+            background: "#E8F5F0",
+            color: "#2E7D62",
+            padding: "3px 10px",
+            borderRadius: 20,
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          {item.is_active ? "Verfügbar" : "Nicht verfügbar"}
+        </span>
       </div>
 
-      {/* Infos */}
-      <div className="p-3">
-        <div className="mb-1 flex items-start justify-between gap-2">
-          <h3 className="line-clamp-1 text-sm font-semibold text-gray-900 group-hover:text-emerald-700">
-            {item.title}
-          </h3>
+      {/* Body */}
+      <div style={{ padding: "14px 16px" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, color: "#111827" }}>
+          {item.title}
         </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-400">
-            {CATEGORY_ICONS[item.category]}{" "}
-            {CATEGORY_LABELS[item.category]}
-          </span>
-          {item.location && (
-            <span className="text-xs text-gray-400 truncate max-w-[100px]">
-              📍 {item.location}
-            </span>
-          )}
-        </div>
-
-        {item.review_count > 0 && (
-          <div className="mt-1 flex items-center gap-1 text-xs text-gray-500">
-            <span className="text-yellow-400">★</span>
-            <span>{item.rating.toFixed(1)}</span>
-            <span className="text-gray-300">({item.review_count})</span>
+        {item.location && (
+          <div style={{ fontSize: 13, color: "#9CA3AF", marginBottom: 10, display: "flex", alignItems: "center", gap: 4 }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            {item.location}
           </div>
         )}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#2E7D62" }}>
+            {formatPrice(item.price_per_day)}
+            {item.price_per_day ? (
+              <span style={{ fontSize: 12, fontWeight: 400, color: "#9CA3AF" }}> / Tag</span>
+            ) : null}
+          </div>
+          {item.review_count > 0 && (
+            <StarRating rating={item.rating} />
+          )}
+        </div>
       </div>
     </Link>
   );

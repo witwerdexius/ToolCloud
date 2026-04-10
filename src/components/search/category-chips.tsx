@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CATEGORIES, CATEGORY_LABELS, CATEGORY_ICONS } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 import type { Category } from "@/types";
 
 export function CategoryChips() {
@@ -20,29 +19,38 @@ export function CategoryChips() {
     return `/?${params.toString()}`;
   }
 
+  const chipBase: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    background: "#fff",
+    border: "1.5px solid #E5E7EB",
+    padding: "10px 16px",
+    borderRadius: 30,
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500,
+    color: "#374151",
+    transition: "all .15s",
+    whiteSpace: "nowrap",
+    textDecoration: "none",
+    flexShrink: 0,
+  };
+
+  const chipActive: React.CSSProperties = {
+    ...chipBase,
+    borderColor: "#2E7D62",
+    color: "#2E7D62",
+    background: "#E8F5F0",
+  };
+
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-      <Link
-        href={buildUrl(null)}
-        className={cn(
-          "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
-          !activeCategory
-            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-            : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-        )}
-      >
-        Alle
-      </Link>
+    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
       {CATEGORIES.map((cat) => (
         <Link
           key={cat}
           href={buildUrl(cat)}
-          className={cn(
-            "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
-            activeCategory === cat
-              ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-              : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-          )}
+          style={activeCategory === cat ? chipActive : chipBase}
         >
           {CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}
         </Link>

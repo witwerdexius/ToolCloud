@@ -16,11 +16,20 @@ export function SortSelect({ defaultValue }: { defaultValue: string }) {
     <select
       defaultValue={defaultValue}
       onChange={handleChange}
-      className="shrink-0 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-sm text-gray-600 focus:outline-none"
+      style={{
+        padding: "8px 14px",
+        border: "1.5px solid #E5E7EB",
+        borderRadius: 8,
+        fontSize: 13,
+        color: "#374151",
+        background: "#fff",
+        cursor: "pointer",
+        outline: "none",
+      }}
     >
-      <option value="newest">Neueste</option>
-      <option value="price_asc">Günstigste</option>
-      <option value="rating">Beste Bewertung</option>
+      <option value="newest">⭐ Sortierung: Empfohlen</option>
+      <option value="rating">⭐ Beste Bewertung</option>
+      <option value="price_asc">💶 Günstiger zuerst</option>
     </select>
   );
 }

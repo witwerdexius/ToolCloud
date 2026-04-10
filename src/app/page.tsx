@@ -69,7 +69,8 @@ async function ItemGrid({ q, category, sort }: { q?: string; category?: string; 
         </p>
         <Link
           href="/items/new"
-          className="mt-4 inline-block rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
+          className="mt-4 inline-block rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors"
+          style={{ background: "#2E7D62" }}
         >
           Inserat erstellen
         </Link>
@@ -78,7 +79,7 @@ async function ItemGrid({ q, category, sort }: { q?: string; category?: string; 
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
       {items.map((item) => (
         <ItemCard key={item.id} item={item as Item} />
       ))}
@@ -90,51 +91,66 @@ export default function HomePage({ searchParams }: HomePageProps) {
   const { q, category, sort } = searchParams;
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main style={{ minHeight: "100vh", background: "#F9FAFB" }}>
       {/* Hero */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="mx-auto max-w-5xl px-4 py-10">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
-            Leihen statt kaufen.
-          </h1>
-          <p className="mb-6 text-gray-500">
-            Entdecke Werkzeug, Zelte, Instrumente und mehr – von Menschen in
-            deiner Nachbarschaft.
-          </p>
-          <Suspense>
-            <SearchBar />
-          </Suspense>
-        </div>
+      <div style={{ background: "linear-gradient(135deg, #2E7D62 0%, #3FA882 100%)", padding: "56px 24px 64px", textAlign: "center", color: "#fff" }}>
+        <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>
+          Leihen statt kaufen.<br />Gemeinsam mehr.
+        </h1>
+        <p style={{ fontSize: 17, opacity: 0.88, marginBottom: 32 }}>
+          Finde Gegenstände in deiner Nähe – von Menschen, denen du vertrauen kannst.
+        </p>
+        <Suspense>
+          <SearchBar />
+        </Suspense>
       </div>
 
-      {/* Filter + Sortierung */}
-      <div className="sticky top-14 z-10 border-b border-gray-100 bg-white/90 backdrop-blur-sm">
-        <div className="mx-auto max-w-5xl px-4 py-3">
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <Suspense>
-                <CategoryChips />
-              </Suspense>
-            </div>
-            <Suspense>
-              <SortSelect defaultValue={sort ?? "newest"} />
-            </Suspense>
+      {/* Categories */}
+      <div style={{ padding: "32px 24px 0", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Kategorien</div>
+        <Suspense>
+          <CategoryChips />
+        </Suspense>
+      </div>
+
+      {/* Filter bar */}
+      <div style={{ display: "flex", gap: 10, padding: "0 24px", maxWidth: 960, margin: "24px auto 0", flexWrap: "wrap" }}>
+        <select
+          style={{ padding: "8px 14px", border: "1.5px solid #E5E7EB", borderRadius: 8, fontSize: 13, color: "#374151", background: "#fff", cursor: "pointer", outline: "none" }}
+        >
+          <option>📍 Umkreis: 10 km</option>
+          <option>📍 Umkreis: 5 km</option>
+          <option>📍 Umkreis: 25 km</option>
+        </select>
+        <select
+          style={{ padding: "8px 14px", border: "1.5px solid #E5E7EB", borderRadius: 8, fontSize: 13, color: "#374151", background: "#fff", cursor: "pointer", outline: "none" }}
+        >
+          <option>💶 Alle Preise</option>
+          <option>💶 Kostenlos</option>
+          <option>💶 Bis 5 €/Tag</option>
+          <option>💶 Bis 15 €/Tag</option>
+        </select>
+        <Suspense>
+          <SortSelect defaultValue={sort ?? "newest"} />
+        </Suspense>
+      </div>
+
+      {/* Items */}
+      <div style={{ padding: "28px 24px 40px", maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#111827" }}>
+            {q ? (
+              <>Ergebnisse für <span style={{ color: "#2E7D62" }}>„{q}"</span></>
+            ) : (
+              "Aktuelle Inserate"
+            )}
           </div>
         </div>
-      </div>
-
-      {/* Ergebnisse */}
-      <div className="mx-auto max-w-5xl px-4 py-6">
-        {q && (
-          <p className="mb-4 text-sm text-gray-500">
-            Ergebnisse für <span className="font-medium text-gray-900">&bdquo;{q}&ldquo;</span>
-          </p>
-        )}
         <Suspense
           fallback={
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-2xl bg-gray-200 aspect-[4/3]" />
+                <div key={i} className="animate-pulse" style={{ borderRadius: 12, background: "#E5E7EB", height: 260 }} />
               ))}
             </div>
           }
