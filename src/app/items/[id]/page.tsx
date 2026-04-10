@@ -39,6 +39,14 @@ export default async function ItemDetailPage({ params }: Props) {
   const isOwner = authUser?.id === item.owner_id;
   const owner = item.owner as User;
 
+  // Reviews über den Owner dieses Inserats
+  const { data: reviews } = await supabase
+    .from("reviews")
+    .select("id, rating, comment, created_at, reviewer:users(id, name)")
+    .eq("reviewed_user_id", item.owner_id)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
   const ownerInitials = owner?.name
     ? owner.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
     : "?";
@@ -216,23 +224,85 @@ export default async function ItemDetailPage({ params }: Props) {
                       Mitglied seit {formatDate(owner.created_at)}
                     </div>
                   </div>
-                  <Link
-                    href="/messages"
-                    style={{
-                      marginLeft: "auto",
-                      padding: "6px 12px",
-                      borderRadius: 8,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      background: "#F3F4F6",
-                      color: "#374151",
-                      textDecoration: "none",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Nachricht
-                  </Link>
+                  {/* C2: Messaging-Kontext via Query-Params */}
+                  {authUser && !isOwner && (
+                    <Link
+                      href={`/messages?to=${owner.id}&item=${item.id}`}
+                      style={{
+                        marginLeft: "auto",
+                        padding: "6px 12px",
+                        borderRadius: 8,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        background: "#F3F4F6",
+                        color: "#374151",
+                        textDecoration: "none",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Nachricht
+                    </Link>
+                  )}
+                </div>
+              )}
+
+              {/* C1: Reviews-Sektion */}
+              {reviews && reviews.length > 0 && (
+                <div style={{ marginTop: 40 }}>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 16 }}>
+                    Bewertungen
+                  </div>
+                  {reviews.map((review) => {
+                    type RevType = {
+                      id: string;
+                      rating: number;
+                      comment: string | null;
+                      created_at: string;
+                      reviewer: { id: string; name: string } | { id: string; name: string }[] | null;
+                    };
+                    const rev = review as RevType;
+                    const reviewerData = Array.isArray(rev.reviewer) ? rev.reviewer[0] : rev.reviewer;
+                    const initials = reviewerData?.name
+                      ? reviewerData.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+                      : "?";
+                    const avatarColors = ["#6366F1", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6", "#F97316"];
+                    const colorIdx = reviewerData?.name
+                      ? reviewerData.name.charCodeAt(0) % avatarColors.length
+                      : 0;
+                    return (
+                      <div key={rev.id} style={{ padding: "16px 0", borderBottom: "1px solid #F3F4F6" }}>
+                        <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8 }}>
+                          <div
+                            style={{
+                              width: 36, height: 36, borderRadius: "50%",
+                              background: avatarColors[colorIdx],
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              fontWeight: 700, fontSize: 13, color: "#fff", flexShrink: 0,
+                            }}
+                          >
+                            {initials}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: "#111827" }}>
+                              {reviewerData?.name ?? "Anonym"}
+                            </div>
+                            <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+                              {formatDate(rev.created_at)}
+                            </div>
+                          </div>
+                          <div style={{ marginLeft: "auto", color: "#F59E0B", fontSize: 14 }}>
+                            {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                          </div>
+                        </div>
+                        {rev.comment && (
+                          <p style={{ fontSize: 14, color: "#374151", lineHeight: 1.6 }}>
+                            {rev.comment}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

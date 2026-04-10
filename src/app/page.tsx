@@ -5,6 +5,7 @@ import { ItemCard } from "@/components/items/item-card";
 import { SearchBar } from "@/components/search/search-bar";
 import { CategoryChips } from "@/components/search/category-chips";
 import { SortSelect } from "@/components/search/sort-select";
+import { FilterBar } from "@/components/search/filter-bar";
 import type { Item } from "@/types";
 import type { Category } from "@/types";
 
@@ -13,10 +14,11 @@ interface HomePageProps {
     q?: string;
     category?: string;
     sort?: string;
+    max_price?: string;
   };
 }
 
-async function ItemGrid({ q, category, sort }: { q?: string; category?: string; sort?: string }) {
+async function ItemGrid({ q, category, sort, max_price }: { q?: string; category?: string; sort?: string; max_price?: string }) {
   const supabase = createClient();
 
   let query = supabase
@@ -32,6 +34,14 @@ async function ItemGrid({ q, category, sort }: { q?: string; category?: string; 
 
   if (category) {
     query = query.eq("category", category as Category);
+  }
+
+  // D2/D3: Preis-Filter
+  if (max_price === "0") {
+    // Kostenlos = kein Preis gesetzt
+    query = query.is("price_per_day", null);
+  } else if (max_price) {
+    query = query.lte("price_per_day", Number(max_price));
   }
 
   switch (sort) {
@@ -88,7 +98,7 @@ async function ItemGrid({ q, category, sort }: { q?: string; category?: string; 
 }
 
 export default function HomePage({ searchParams }: HomePageProps) {
-  const { q, category, sort } = searchParams;
+  const { q, category, sort, max_price } = searchParams;
 
   return (
     <main style={{ minHeight: "100vh", background: "#F9FAFB" }}>
@@ -115,21 +125,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
 
       {/* Filter bar */}
       <div style={{ display: "flex", gap: 10, padding: "0 24px", maxWidth: 960, margin: "24px auto 0", flexWrap: "wrap" }}>
-        <select
-          style={{ padding: "8px 14px", border: "1.5px solid #E5E7EB", borderRadius: 8, fontSize: 13, color: "#374151", background: "#fff", cursor: "pointer", outline: "none" }}
-        >
-          <option>📍 Umkreis: 10 km</option>
-          <option>📍 Umkreis: 5 km</option>
-          <option>📍 Umkreis: 25 km</option>
-        </select>
-        <select
-          style={{ padding: "8px 14px", border: "1.5px solid #E5E7EB", borderRadius: 8, fontSize: 13, color: "#374151", background: "#fff", cursor: "pointer", outline: "none" }}
-        >
-          <option>💶 Alle Preise</option>
-          <option>💶 Kostenlos</option>
-          <option>💶 Bis 5 €/Tag</option>
-          <option>💶 Bis 15 €/Tag</option>
-        </select>
+        <Suspense>
+          <FilterBar />
+        </Suspense>
         <Suspense>
           <SortSelect defaultValue={sort ?? "newest"} />
         </Suspense>
@@ -155,7 +153,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
             </div>
           }
         >
-          <ItemGrid q={q} category={category} sort={sort} />
+          <ItemGrid q={q} category={category} sort={sort} max_price={max_price} />
         </Suspense>
       </div>
     </main>
