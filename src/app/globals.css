@@ -83,6 +83,20 @@ body {
     padding-left: 4px;
   }
 
+  /* Search bar: full width, no overflow */
+  .search-bar-form {
+    max-width: 100% !important;
+    border-radius: 12px !important;
+  }
+  /* Hide location label text, keep only icon */
+  .search-location-label { display: none; }
+  /* Hide "Suchen" text label, keep icon only */
+  .search-btn-label { display: none; }
+  /* Hide location section entirely on very narrow screens */
+  @media (max-width: 400px) {
+    .search-location { display: none !important; }
+  }
+
   /* Hero section: tighter padding & smaller text */
   .hero-section {
     padding: 32px 16px 40px !important;

@@ -23,8 +23,10 @@ export function SearchBar() {
   return (
     <form
       onSubmit={handleSubmit}
+      className="search-bar-form"
       style={{
         maxWidth: 640,
+        width: "100%",
         margin: "0 auto",
         background: "#fff",
         borderRadius: 14,
@@ -32,48 +34,52 @@ export function SearchBar() {
         alignItems: "center",
         boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
         overflow: "hidden",
+        minWidth: 0,
       }}
     >
       <input
         ref={inputRef}
         type="search"
         defaultValue={searchParams.get("q") ?? ""}
-        placeholder="Was suchst du? z. B. Bohrmaschine, Zelt …"
+        placeholder="Was suchst du? z. B. Bohrmaschine …"
         style={{
           flex: 1,
+          minWidth: 0,
           border: "none",
           outline: "none",
-          padding: "16px 20px",
+          padding: "16px 14px",
           fontSize: 15,
           color: "#111827",
           background: "transparent",
         }}
       />
-      {/* Divider */}
-      <div style={{ width: 1, height: 32, background: "#E5E7EB", flexShrink: 0 }} />
-      {/* Location */}
-      <button
-        type="button"
-        style={{
-          border: "none",
-          outline: "none",
-          padding: "16px",
-          fontSize: 14,
-          color: "#6B7280",
-          background: "none",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          whiteSpace: "nowrap",
-        }}
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-        Berlin
-      </button>
+      {/* Divider + Location – hidden on very small screens via CSS */}
+      <div className="search-location" style={{ display: "contents" }}>
+        <div style={{ width: 1, height: 32, background: "#E5E7EB", flexShrink: 0 }} />
+        <button
+          type="button"
+          style={{
+            border: "none",
+            outline: "none",
+            padding: "16px 12px",
+            fontSize: 14,
+            color: "#6B7280",
+            background: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          <span className="search-location-label">Berlin</span>
+        </button>
+      </div>
       {/* Search button */}
       <button
         type="submit"
@@ -81,10 +87,10 @@ export function SearchBar() {
           background: "#2E7D62",
           border: "none",
           cursor: "pointer",
-          padding: "14px 22px",
+          padding: "14px 18px",
           display: "flex",
           alignItems: "center",
-          gap: 8,
+          gap: 6,
           color: "#fff",
           fontSize: 15,
           fontWeight: 600,
@@ -98,7 +104,7 @@ export function SearchBar() {
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
-        Suchen
+        <span className="search-btn-label">Suchen</span>
       </button>
     </form>
   );
