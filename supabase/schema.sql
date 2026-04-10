@@ -36,18 +36,31 @@ CREATE TABLE users (
 );
 
 -- Automatisch Profil anlegen wenn Nutzer sich registriert
-CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS TRIGGER AS $$
+-- WICHTIG: SET search_path = public ist zwingend nötig, sonst findet
+-- die Function die public.users-Tabelle aus dem auth-Kontext nicht.
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
-  INSERT INTO users (id, name)
-  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data->>'name', 'Neuer Nutzer'));
+  INSERT INTO public.users (id, name)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'name', 'Neuer Nutzer')
+  );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
+
+-- Supabase-Auth-Rolle braucht INSERT-Rechte auf public.users,
+-- damit der Trigger aus dem auth-Kontext schreiben darf.
+GRANT INSERT ON public.users TO supabase_auth_admin;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 
 -- ─── ITEMS ────────────────────────────────────────────────────────────────────
