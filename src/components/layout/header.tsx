@@ -50,11 +50,32 @@ export async function Header() {
 
   return (
     <header
-      style={{ background: "#fff", borderBottom: "1px solid #E5E7EB", height: 60 }}
-      className="sticky top-0 z-50 flex items-center justify-between px-6"
+      style={{
+        background: "#fff",
+        borderBottom: "1px solid #E5E7EB",
+        height: 60,
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 24px",
+      }}
     >
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 no-underline" style={{ color: "#2E7D62", fontWeight: 800, fontSize: 20 }}>
+      <Link
+        href="/"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          color: "#2E7D62",
+          fontWeight: 800,
+          fontSize: 20,
+          textDecoration: "none",
+        }}
+      >
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
           <rect width="28" height="28" rx="8" fill="#2E7D62" />
           <path d="M7 14l5 5 9-9" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -63,7 +84,7 @@ export async function Header() {
       </Link>
 
       {/* Nav */}
-      <nav className="flex items-center gap-2">
+      <nav style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {user ? (
           <>
             <Link
