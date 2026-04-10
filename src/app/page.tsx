@@ -125,7 +125,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
         <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>
           Leihen statt kaufen.<br />Gemeinsam mehr.
         </h1>
-        <p style={{ fontSize: 17, opacity: 0.88, marginBottom: 32, maxWidth: 560, margin: "0 auto 32px" }}>
+        <p style={{ fontSize: 17, opacity: 0.88, maxWidth: 680, margin: "0 auto 32px" }}>
           Finde Gegenstände in deiner Nähe – von Menschen, denen du vertrauen kannst.
         </p>
         <Suspense>

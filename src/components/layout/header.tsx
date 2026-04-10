@@ -34,6 +34,8 @@ export async function Header() {
 
   function navLinkStyle(active: boolean): React.CSSProperties {
     return {
+      display: "inline-flex",
+      alignItems: "center",
       padding: "8px 14px",
       borderRadius: 8,
       fontSize: 14,
@@ -42,6 +44,7 @@ export async function Header() {
       transition: "background .15s, color .15s",
       color: active ? "#2E7D62" : "#374151",
       background: active ? "#E8F5F0" : "transparent",
+      whiteSpace: "nowrap",
     };
   }
 
@@ -120,9 +123,10 @@ export async function Header() {
             <Link
               href="/auth/register"
               style={{
+                display: "inline-flex", alignItems: "center",
                 padding: "10px 20px", borderRadius: 8, fontSize: 14, fontWeight: 600,
                 background: "#2E7D62", color: "#fff", textDecoration: "none",
-                transition: "background .15s",
+                transition: "background .15s", whiteSpace: "nowrap",
               }}
             >
               Registrieren
