@@ -64,7 +64,7 @@ async function ItemGrid({ q, category, sort }: { q?: string; category?: string; 
         <p className="text-gray-600 font-medium">Keine Inserate gefunden</p>
         <p className="text-sm text-gray-400 mt-1">
           {q
-            ? `Keine Ergebnisse für „${q}"`
+            ? `Keine Ergebnisse für \u201e${q}\u201c`
             : "Sei der Erste und stelle einen Gegenstand ein!"}
         </p>
         <Link
@@ -140,7 +140,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <div style={{ fontSize: 20, fontWeight: 700, color: "#111827" }}>
             {q ? (
-              <>Ergebnisse für <span style={{ color: "#2E7D62" }}>„{q}"</span></>
+              <>Ergebnisse für <span style={{ color: "#2E7D62" }}>&bdquo;{q}&ldquo;</span></>
             ) : (
               "Aktuelle Inserate"
             )}
