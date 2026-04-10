@@ -13,6 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const fieldErrorStyle: React.CSSProperties = {
+  marginTop: 6,
+  fontSize: 12,
+  color: "#EF4444",
+};
+
 export function ForgotPasswordForm() {
   const supabase = createClient();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -42,10 +48,26 @@ export function ForgotPasswordForm() {
 
   if (sent) {
     return (
-      <div className="rounded-xl bg-emerald-50 p-6 text-center">
-        <div className="mb-3 text-4xl">📧</div>
-        <h2 className="mb-2 font-semibold text-gray-900">E-Mail verschickt</h2>
-        <p className="text-sm text-gray-600">
+      <div
+        style={{
+          borderRadius: 12,
+          background: "#E8F5F0",
+          padding: 28,
+          textAlign: "center",
+        }}
+      >
+        <div style={{ fontSize: 40, marginBottom: 12 }}>📧</div>
+        <h2
+          style={{
+            fontSize: 18,
+            fontWeight: 700,
+            color: "#111827",
+            marginBottom: 8,
+          }}
+        >
+          E-Mail verschickt
+        </h2>
+        <p style={{ fontSize: 14, color: "#4B5563", lineHeight: 1.5 }}>
           Falls ein Konto mit dieser E-Mail existiert, haben wir dir einen
           Reset-Link geschickt. Bitte schau auch in deinem Spam-Ordner nach.
         </p>
@@ -54,7 +76,10 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    >
       <div>
         <Label htmlFor="email" required>
           E-Mail-Adresse
@@ -67,26 +92,42 @@ export function ForgotPasswordForm() {
           error={errors.email?.message}
           {...register("email")}
         />
-        {errors.email && (
-          <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-        )}
+        {errors.email && <p style={fieldErrorStyle}>{errors.email.message}</p>}
       </div>
 
       {serverError && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+        <p
+          style={{
+            borderRadius: 10,
+            background: "#FEF2F2",
+            border: "1px solid #FECACA",
+            padding: "10px 14px",
+            fontSize: 13,
+            color: "#B91C1C",
+          }}
+        >
           {serverError}
         </p>
       )}
 
-      <Button type="submit" size="lg" loading={isSubmitting} className="w-full">
+      <Button
+        type="submit"
+        size="lg"
+        loading={isSubmitting}
+        style={{ width: "100%", marginTop: 4 }}
+      >
         Reset-Link senden
       </Button>
 
-      <p className="text-center text-sm text-gray-500">
-        <Link
-          href="/auth/login"
-          className="text-emerald-600 font-medium hover:underline"
-        >
+      <p
+        style={{
+          textAlign: "center",
+          fontSize: 13,
+          color: "#6B7280",
+          marginTop: 4,
+        }}
+      >
+        <Link href="/auth/login" className="tc-link">
           Zurück zur Anmeldung
         </Link>
       </p>

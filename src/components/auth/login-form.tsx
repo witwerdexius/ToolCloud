@@ -11,6 +11,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const fieldErrorStyle: React.CSSProperties = {
+  marginTop: 6,
+  fontSize: 12,
+  color: "#EF4444",
+};
+
 export function LoginForm() {
   const router = useRouter();
   const supabase = createClient();
@@ -45,7 +51,10 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    >
       <div>
         <Label htmlFor="email" required>
           E-Mail
@@ -58,19 +67,25 @@ export function LoginForm() {
           error={errors.email?.message}
           {...register("email")}
         />
-        {errors.email && (
-          <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-        )}
+        {errors.email && <p style={fieldErrorStyle}>{errors.email.message}</p>}
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-1">
-          <Label htmlFor="password" required>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 6,
+          }}
+        >
+          <Label htmlFor="password" required style={{ marginBottom: 0 }}>
             Passwort
           </Label>
           <Link
             href="/auth/forgot-password"
-            className="text-xs text-emerald-600 hover:underline"
+            className="tc-link"
+            style={{ fontSize: 12 }}
           >
             Passwort vergessen?
           </Link>
@@ -84,26 +99,44 @@ export function LoginForm() {
           {...register("password")}
         />
         {errors.password && (
-          <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+          <p style={fieldErrorStyle}>{errors.password.message}</p>
         )}
       </div>
 
       {serverError && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+        <p
+          style={{
+            borderRadius: 10,
+            background: "#FEF2F2",
+            border: "1px solid #FECACA",
+            padding: "10px 14px",
+            fontSize: 13,
+            color: "#B91C1C",
+          }}
+        >
           {serverError}
         </p>
       )}
 
-      <Button type="submit" size="lg" loading={isSubmitting} className="w-full">
+      <Button
+        type="submit"
+        size="lg"
+        loading={isSubmitting}
+        style={{ width: "100%", marginTop: 4 }}
+      >
         Anmelden
       </Button>
 
-      <p className="text-center text-sm text-gray-500">
+      <p
+        style={{
+          textAlign: "center",
+          fontSize: 13,
+          color: "#6B7280",
+          marginTop: 4,
+        }}
+      >
         Noch kein Konto?{" "}
-        <Link
-          href="/auth/register"
-          className="text-emerald-600 font-medium hover:underline"
-        >
+        <Link href="/auth/register" className="tc-link">
           Jetzt registrieren
         </Link>
       </p>

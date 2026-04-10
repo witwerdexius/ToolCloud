@@ -1,17 +1,22 @@
-import { cn } from "@/lib/utils";
-
 interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   required?: boolean;
 }
 
-export function Label({ className, required, children, ...props }: LabelProps) {
+export function Label({ required, children, style, ...props }: LabelProps) {
   return (
     <label
-      className={cn("block text-sm font-medium text-gray-700 mb-1", className)}
+      style={{
+        display: "block",
+        fontSize: 13,
+        fontWeight: 600,
+        color: "#374151",
+        marginBottom: 6,
+        ...style,
+      }}
       {...props}
     >
       {children}
-      {required && <span className="ml-1 text-red-500">*</span>}
+      {required && <span style={{ marginLeft: 4, color: "#EF4444" }}>*</span>}
     </label>
   );
 }

@@ -13,6 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const fieldErrorStyle: React.CSSProperties = {
+  marginTop: 6,
+  fontSize: 12,
+  color: "#EF4444",
+};
+
 export function ResetPasswordForm() {
   const router = useRouter();
   const supabase = createClient();
@@ -42,7 +48,10 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    >
       <div>
         <Label htmlFor="password" required>
           Neues Passwort
@@ -56,7 +65,7 @@ export function ResetPasswordForm() {
           {...register("password")}
         />
         {errors.password && (
-          <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+          <p style={fieldErrorStyle}>{errors.password.message}</p>
         )}
       </div>
 
@@ -73,19 +82,31 @@ export function ResetPasswordForm() {
           {...register("confirmPassword")}
         />
         {errors.confirmPassword && (
-          <p className="mt-1 text-xs text-red-500">
-            {errors.confirmPassword.message}
-          </p>
+          <p style={fieldErrorStyle}>{errors.confirmPassword.message}</p>
         )}
       </div>
 
       {serverError && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+        <p
+          style={{
+            borderRadius: 10,
+            background: "#FEF2F2",
+            border: "1px solid #FECACA",
+            padding: "10px 14px",
+            fontSize: 13,
+            color: "#B91C1C",
+          }}
+        >
           {serverError}
         </p>
       )}
 
-      <Button type="submit" size="lg" loading={isSubmitting} className="w-full">
+      <Button
+        type="submit"
+        size="lg"
+        loading={isSubmitting}
+        style={{ width: "100%", marginTop: 4 }}
+      >
         Passwort speichern
       </Button>
     </form>

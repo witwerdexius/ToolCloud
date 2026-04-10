@@ -67,3 +67,71 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* ---- Form primitives (inline-style-free interactive states) ---- */
+.tc-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111827;
+  background: #fff;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.tc-input::placeholder { color: #9CA3AF; }
+.tc-input:focus {
+  border-color: #2E7D62;
+  box-shadow: 0 0 0 3px rgba(46, 125, 98, 0.15);
+}
+.tc-input.tc-input-error {
+  border-color: #EF4444;
+}
+.tc-input.tc-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background .15s, transform .05s, box-shadow .15s;
+  text-decoration: none;
+}
+.tc-btn:disabled { opacity: .6; cursor: not-allowed; }
+.tc-btn-sm { height: 34px; padding: 0 14px; font-size: 13px; }
+.tc-btn-md { height: 40px; padding: 0 18px; font-size: 14px; }
+.tc-btn-lg { height: 48px; padding: 0 22px; font-size: 15px; }
+.tc-btn-primary { background: #2E7D62; color: #fff; }
+.tc-btn-primary:hover:not(:disabled) { background: #266b53; }
+.tc-btn-secondary { background: #fff; color: #111827; border: 1.5px solid #E5E7EB; }
+.tc-btn-secondary:hover:not(:disabled) { background: #F9FAFB; border-color: #D1D5DB; }
+.tc-btn-ghost { background: transparent; color: #374151; }
+.tc-btn-ghost:hover:not(:disabled) { background: #F3F4F6; }
+.tc-btn-danger { background: #EF4444; color: #fff; }
+.tc-btn-danger:hover:not(:disabled) { background: #DC2626; }
+
+.tc-link {
+  color: #2E7D62;
+  font-weight: 600;
+  text-decoration: none;
+}
+.tc-link:hover { text-decoration: underline; }
+
+.tc-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: tc-spin .7s linear infinite;
+}
+@keyframes tc-spin { to { transform: rotate(360deg); } }
