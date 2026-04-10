@@ -116,12 +116,15 @@ export default function HomePage({ searchParams }: HomePageProps) {
   return (
     <main style={{ minHeight: "100vh", background: "#F9FAFB" }}>
       {/* Hero */}
-      <div style={{
-        background: "linear-gradient(135deg, #2E7D62 0%, #3FA882 100%)",
-        padding: "56px 24px 64px",
-        textAlign: "center",
-        color: "#fff",
-      }}>
+      <div
+        className="hero-section"
+        style={{
+          background: "linear-gradient(135deg, #2E7D62 0%, #3FA882 100%)",
+          padding: "56px 24px 64px",
+          textAlign: "center",
+          color: "#fff",
+        }}
+      >
         <h1 style={{ fontSize: 36, fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>
           Leihen statt kaufen.<br />Gemeinsam mehr.
         </h1>
@@ -134,7 +137,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       {/* Categories */}
-      <div style={{ padding: "32px 24px 0", maxWidth: 960, margin: "0 auto" }}>
+      <div className="page-section" style={{ padding: "32px 24px 0", maxWidth: 960, margin: "0 auto" }}>
         <div style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Kategorien</div>
         <Suspense>
           <CategoryChips />
@@ -142,7 +145,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       {/* Filter bar */}
-      <div style={{ display: "flex", gap: 10, padding: "0 24px", maxWidth: 960, margin: "20px auto 0", flexWrap: "wrap" }}>
+      <div className="page-section filter-bar-row" style={{ display: "flex", gap: 10, padding: "0 24px", maxWidth: 960, margin: "20px auto 0", flexWrap: "wrap" }}>
         <Suspense>
           <FilterBar />
         </Suspense>
@@ -152,7 +155,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       {/* Items */}
-      <div style={{ padding: "28px 24px 40px", maxWidth: 960, margin: "0 auto" }}>
+      <div className="page-section" style={{ padding: "28px 24px 40px", maxWidth: 960, margin: "0 auto" }}>
         <Suspense
           fallback={
             <>

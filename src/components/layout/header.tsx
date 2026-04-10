@@ -3,6 +3,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 export async function Header() {
   const supabase = createClient();
@@ -74,6 +75,7 @@ export async function Header() {
           fontWeight: 800,
           fontSize: 20,
           textDecoration: "none",
+          flexShrink: 0,
         }}
       >
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -83,34 +85,14 @@ export async function Header() {
         ToolCloud
       </Link>
 
-      {/* Nav */}
-      <nav style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      {/* Desktop Nav */}
+      <nav className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {user ? (
           <>
-            <Link
-              href="/"
-              style={navLinkStyle(pathname === "/")}
-            >
-              Entdecken
-            </Link>
-            <Link
-              href="/bookings"
-              style={navLinkStyle(pathname.startsWith("/bookings"))}
-            >
-              Meine Buchungen
-            </Link>
-            <Link
-              href="/items/new"
-              style={navLinkStyle(pathname.startsWith("/items/new"))}
-            >
-              + Inserat
-            </Link>
-            <Link
-              href="/messages"
-              style={navLinkStyle(pathname.startsWith("/messages"))}
-            >
-              Nachrichten
-            </Link>
+            <Link href="/" style={navLinkStyle(pathname === "/")}>Entdecken</Link>
+            <Link href="/bookings" style={navLinkStyle(pathname.startsWith("/bookings"))}>Meine Buchungen</Link>
+            <Link href="/items/new" style={navLinkStyle(pathname.startsWith("/items/new"))}>+ Inserat</Link>
+            <Link href="/messages" style={navLinkStyle(pathname.startsWith("/messages"))}>Nachrichten</Link>
             {/* Avatar */}
             <Link
               href="/profile"
@@ -129,18 +111,8 @@ export async function Header() {
           </>
         ) : (
           <>
-            <Link
-              href="/"
-              style={navLinkStyle(pathname === "/")}
-            >
-              Entdecken
-            </Link>
-            <Link
-              href="/auth/login"
-              style={navLinkStyle(pathname.startsWith("/auth/login"))}
-            >
-              Anmelden
-            </Link>
+            <Link href="/" style={navLinkStyle(pathname === "/")}>Entdecken</Link>
+            <Link href="/auth/login" style={navLinkStyle(pathname.startsWith("/auth/login"))}>Anmelden</Link>
             <Link
               href="/auth/register"
               style={{
@@ -155,6 +127,9 @@ export async function Header() {
           </>
         )}
       </nav>
+
+      {/* Mobile Hamburger */}
+      <MobileNav user={!!user} initials={initials} />
     </header>
   );
 }

@@ -68,6 +68,50 @@ body {
   margin-right: auto;
 }
 
+/* ---- Mobile responsive ---- */
+@media (max-width: 767px) {
+  /* Hide desktop nav on mobile */
+  .desktop-nav { display: none !important; }
+
+  /* Category chips: horizontal scroll instead of wrap */
+  .category-chips-container {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding-bottom: 8px;
+    /* Allow chips to scroll beyond the padded container */
+    margin-left: -4px;
+    padding-left: 4px;
+  }
+
+  /* Hero section: tighter padding & smaller text */
+  .hero-section {
+    padding: 32px 16px 40px !important;
+  }
+  .hero-section h1 {
+    font-size: 26px !important;
+  }
+  .hero-section p {
+    font-size: 15px !important;
+  }
+
+  /* Page sections: less horizontal padding */
+  .page-section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Filter bar: allow wrapping with proper width */
+  .filter-bar-row select {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Hide mobile hamburger on desktop */
+  .mobile-menu-btn { display: none !important; }
+}
+
 /* ---- Form primitives (inline-style-free interactive states) ---- */
 .tc-input {
   width: 100%;

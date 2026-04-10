@@ -45,7 +45,10 @@ export function CategoryChips() {
   };
 
   return (
-    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+    <div
+      className="category-chips-container scrollbar-none"
+      style={{ display: "flex", gap: 12, flexWrap: "wrap" }}
+    >
       {CATEGORIES.map((cat) => (
         <Link
           key={cat}
