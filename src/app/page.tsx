@@ -136,7 +136,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
       <div className="mx-auto max-w-5xl px-4 py-6">
         {q && (
           <p className="mb-4 text-sm text-gray-500">
-            Ergebnisse für <span className="font-medium text-gray-900">„{q}"</span>
+            Ergebnisse für <span className="font-medium text-gray-900">&bdquo;{q}&ldquo;</span>
           </p>
         )}
         <Suspense

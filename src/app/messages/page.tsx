@@ -22,12 +22,14 @@ export default async function MessagesPage() {
     .order("created_at", { ascending: false })
     .limit(50);
 
+  type MsgUser = { id: string; name: string } | null;
+  type MsgRecord = typeof messages extends (infer T)[] | null ? T : never;
+
   // Konversationen gruppieren (nach "anderer Nutzer")
   type Convo = {
     otherId: string;
     otherName: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    lastMessage: any;
+    lastMessage: MsgRecord;
     unread: number;
   };
 
@@ -35,8 +37,9 @@ export default async function MessagesPage() {
   for (const msg of messages ?? []) {
     const isSender = msg.sender_id === user.id;
     const otherId = isSender ? msg.receiver_id : msg.sender_id;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const otherUser = isSender ? (msg.receiver as any) : (msg.sender as any);
+    const otherUser = isSender
+      ? (msg.receiver as MsgUser)
+      : (msg.sender as MsgUser);
 
     if (!convMap.has(otherId)) {
       convMap.set(otherId, {

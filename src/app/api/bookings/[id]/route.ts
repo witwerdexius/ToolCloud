@@ -43,8 +43,9 @@ export async function PATCH(
     return NextResponse.json({ error: "Buchung nicht gefunden" }, { status: 404 });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ownerId = (booking.item as any)?.owner_id;
+  // Supabase liefert join-Ergebnisse manchmal als Array
+  const itemData = Array.isArray(booking.item) ? booking.item[0] : booking.item;
+  const ownerId = (itemData as { owner_id: string } | null)?.owner_id;
   const isBorrower = booking.borrower_id === user.id;
   const isOwner = ownerId === user.id;
 

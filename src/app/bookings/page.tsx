@@ -122,13 +122,29 @@ export default async function BookingsPage() {
   );
 }
 
+type BookingCardItem = {
+  id: string;
+  title: string;
+  images: string[];
+  category: string;
+  location: string;
+} | null;
+
+type BookingCardData = {
+  id: string;
+  status: string;
+  start_date: string;
+  end_date: string;
+  message: string | null;
+  item: BookingCardItem;
+  borrower: { id: string; name: string } | null;
+};
+
 function BookingCard({
   booking,
   viewAs,
-  currentUserId,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  booking: any;
+  booking: BookingCardData;
   viewAs: "borrower" | "owner";
   currentUserId: string;
 }) {
@@ -184,7 +200,7 @@ function BookingCard({
           )}
           {booking.message && (
             <p className="mt-1 text-xs text-gray-500 line-clamp-1">
-              „{booking.message}"
+              &bdquo;{booking.message}&ldquo;
             </p>
           )}
         </div>
