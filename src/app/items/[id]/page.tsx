@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_LABELS, CATEGORY_ICONS } from "@/lib/constants";
 import { formatPrice, formatDate } from "@/lib/utils";
 import { BookingForm } from "@/components/booking/booking-form";
-import { AvailabilityCalendar } from "@/components/items/availability-calendar";
 import type { Item, User, DateRange } from "@/types";
 
 interface Props {
@@ -380,11 +379,7 @@ export default async function ItemDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Availability calendar */}
-              <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #E5E7EB" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: "#374151" }}>Verfügbarkeit</div>
-                <AvailabilityCalendar blockedRanges={blockedRanges} />
-              </div>
+
             </div>
           </div>
         </div>
