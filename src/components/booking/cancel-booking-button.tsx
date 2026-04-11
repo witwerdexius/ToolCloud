@@ -1,11 +1,86 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 interface CancelBookingButtonProps {
   bookingId: string;
+}
+
+function CancelModal({
+  loading,
+  error,
+  onConfirm,
+  onCancel,
+}: {
+  loading: boolean;
+  error: string | null;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return createPortal(
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onCancel();
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 12,
+          padding: "28px 32px",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+          minWidth: 300,
+          maxWidth: 400,
+          width: "90vw",
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#111827" }}>
+          Buchung stornieren?
+        </p>
+        <p style={{ margin: 0, fontSize: 14, color: "#6B7280" }}>
+          Diese Aktion kann nicht rückgängig gemacht werden.
+        </p>
+        {error && (
+          <p style={{ margin: 0, fontSize: 13, color: "#EF4444" }}>{error}</p>
+        )}
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={loading}
+            onClick={onCancel}
+          >
+            Abbrechen
+          </Button>
+          <Button
+            size="sm"
+            variant="danger"
+            loading={loading}
+            disabled={loading}
+            onClick={onConfirm}
+          >
+            Ja, stornieren
+          </Button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
 }
 
 export function CancelBookingButton({ bookingId }: CancelBookingButtonProps) {
@@ -29,7 +104,6 @@ export function CancelBookingButton({ bookingId }: CancelBookingButtonProps) {
     if (!res.ok) {
       const json = await res.json();
       setError(json.error ?? "Fehler beim Stornieren");
-      setConfirming(false);
       return;
     }
 
@@ -37,38 +111,8 @@ export function CancelBookingButton({ bookingId }: CancelBookingButtonProps) {
     router.refresh();
   }
 
-  if (confirming) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
-        <p style={{ margin: 0, fontSize: 12, color: "#374151", whiteSpace: "nowrap" }}>
-          Wirklich stornieren?
-        </p>
-        <div style={{ display: "flex", gap: 6 }}>
-          <Button
-            size="sm"
-            variant="danger"
-            loading={loading}
-            disabled={loading}
-            onClick={handleCancel}
-          >
-            Ja, stornieren
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            disabled={loading}
-            onClick={() => setConfirming(false)}
-          >
-            Abbrechen
-          </Button>
-        </div>
-        {error && <p style={{ margin: 0, fontSize: 11, color: "#EF4444" }}>{error}</p>}
-      </div>
-    );
-  }
-
   return (
-    <div>
+    <>
       <Button
         size="sm"
         variant="ghost"
@@ -77,7 +121,17 @@ export function CancelBookingButton({ bookingId }: CancelBookingButtonProps) {
       >
         Anfrage stornieren
       </Button>
-      {error && <p style={{ margin: 0, fontSize: 11, color: "#EF4444" }}>{error}</p>}
-    </div>
+      {confirming && (
+        <CancelModal
+          loading={loading}
+          error={error}
+          onConfirm={handleCancel}
+          onCancel={() => {
+            setConfirming(false);
+            setError(null);
+          }}
+        />
+      )}
+    </>
   );
 }
