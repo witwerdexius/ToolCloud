@@ -192,7 +192,7 @@ function BookingCard({
           padding: 16,
           display: "flex",
           gap: 16,
-          alignItems: "center",
+          alignItems: "flex-start",
           position: "relative",
         }}
       >
@@ -244,16 +244,15 @@ function BookingCard({
         </div>
 
         {/* Right: badge + action buttons — above the card link */}
-        <div style={{ textAlign: "right", flexShrink: 0, position: "relative", zIndex: 2 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0, position: "relative", zIndex: 2 }}>
           <span
             style={{
-              display: "block",
+              display: "inline-block",
               padding: "3px 10px",
               borderRadius: 20,
               fontSize: 12,
               fontWeight: 600,
-              marginBottom: 6,
-              textAlign: "center",
+              whiteSpace: "nowrap",
               background: statusBg,
               color: statusColor,
             }}
@@ -263,12 +262,7 @@ function BookingCard({
           {viewAs === "owner" && booking.status === "requested" && (
             <BookingActionButtons bookingId={booking.id} />
           )}
-          {viewAs === "owner" && (booking.status === "requested" || booking.status === "confirmed") && (
-            <div style={{ marginTop: 4 }}>
-              <CancelBookingButton bookingId={booking.id} />
-            </div>
-          )}
-          {viewAs === "borrower" && (booking.status === "requested" || booking.status === "confirmed") && (
+          {(viewAs === "owner" || viewAs === "borrower") && (booking.status === "requested" || booking.status === "confirmed") && (
             <CancelBookingButton bookingId={booking.id} />
           )}
         </div>
