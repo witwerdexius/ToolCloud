@@ -77,7 +77,8 @@ export async function POST(request: NextRequest) {
 
   const days = differenceInDays(parseISO(end_date), parseISO(start_date));
   const rentalCost = (item.price_per_day ?? 0) * days;
-  const totalPrice = rentalCost + (item.deposit ?? 0) + 1; // +1 Servicegebühr
+  const serviceFee = rentalCost > 0 ? 1 : 0;
+  const totalPrice = rentalCost + (item.deposit ?? 0) + serviceFee;
 
   const { data: booking, error: insertError } = await supabase
     .from("bookings")
