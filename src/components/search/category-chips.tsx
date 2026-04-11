@@ -52,7 +52,7 @@ export function CategoryChips() {
       {CATEGORIES.map((cat) => (
         <Link
           key={cat}
-          href={buildUrl(cat)}
+          href={buildUrl(activeCategory === cat ? null : cat)}
           style={activeCategory === cat ? chipActive : chipBase}
         >
           {CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}
