@@ -46,11 +46,42 @@ export function notifyNewBooking(bookingId: string): void {
 
 /**
  * Benachrichtigt den Mieter über eine Statusänderung (confirmed / rejected).
+ * Bei cancelled wird zusätzlich der Stornierende übergeben, damit die andere
+ * Partei benachrichtigt werden kann.
  * Fire-and-forget – blockiert die API-Antwort nicht.
  */
 export function notifyBookingStatus(
   bookingId: string,
-  status: "confirmed" | "rejected"
+  status: "confirmed" | "rejected" | "cancelled",
+  cancelledBy?: "borrower" | "owner"
 ): void {
-  void invokeEdgeFunction("notify-booking-status", { bookingId, status });
+  void invokeEdgeFunction("notify-booking-status", { bookingId, status, cancelledBy });
+}
+
+/**
+ * Benachrichtigt den Vermieter, dass sein Urlaubsmodus gesetzt wurde.
+ * Fire-and-forget – blockiert die API-Antwort nicht.
+ */
+export function notifyVacationModeSet(
+  userId: string,
+  vacationStart: string,
+  vacationEnd: string
+): void {
+  void invokeEdgeFunction("notify-vacation-mode", {
+    userId,
+    vacationStart,
+    vacationEnd,
+    action: "set",
+  });
+}
+
+/**
+ * Benachrichtigt den Vermieter, dass sein Urlaubsmodus entfernt wurde.
+ * Fire-and-forget – blockiert die API-Antwort nicht.
+ */
+export function notifyVacationModeCleared(userId: string): void {
+  void invokeEdgeFunction("notify-vacation-mode", {
+    userId,
+    action: "cleared",
+  });
 }

@@ -79,9 +79,12 @@ export async function PATCH(
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  // E-Mail-Benachrichtigung an Ausleiher bei confirmed / rejected (fire-and-forget)
+  // E-Mail-Benachrichtigung (fire-and-forget)
   if (status === "confirmed" || status === "rejected") {
     notifyBookingStatus(params.id, status);
+  } else if (status === "cancelled") {
+    const cancelledBy = isBorrower ? "borrower" : "owner";
+    notifyBookingStatus(params.id, "cancelled", cancelledBy);
   }
 
   return NextResponse.json({ success: true });

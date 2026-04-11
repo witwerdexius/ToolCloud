@@ -38,17 +38,37 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export const profileSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name muss mindestens 2 Zeichen lang sein")
-    .max(50, "Name darf maximal 50 Zeichen lang sein"),
-  location: z.string().max(100, "Standort zu lang").optional(),
-  description: z
-    .string()
-    .max(500, "Beschreibung darf maximal 500 Zeichen lang sein")
-    .optional(),
-});
+export const profileSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "Name muss mindestens 2 Zeichen lang sein")
+      .max(50, "Name darf maximal 50 Zeichen lang sein"),
+    location: z.string().max(100, "Standort zu lang").optional(),
+    description: z
+      .string()
+      .max(500, "Beschreibung darf maximal 500 Zeichen lang sein")
+      .optional(),
+    vacation_start: z.string().nullable().optional(),
+    vacation_end: z.string().nullable().optional(),
+  })
+  .refine(
+    (data) => {
+      const hasStart = !!data.vacation_start;
+      const hasEnd = !!data.vacation_end;
+      return hasStart === hasEnd; // entweder beide oder keines
+    },
+    { message: "Bitte Startdatum und Enddatum angeben", path: ["vacation_end"] }
+  )
+  .refine(
+    (data) => {
+      if (data.vacation_start && data.vacation_end) {
+        return data.vacation_end >= data.vacation_start;
+      }
+      return true;
+    },
+    { message: "Enddatum muss nach dem Startdatum liegen", path: ["vacation_end"] }
+  );
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;

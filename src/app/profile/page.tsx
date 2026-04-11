@@ -40,6 +40,13 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
     ? profile.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
     : "?";
 
+  const today = new Date().toISOString().split("T")[0];
+  const vacationActive =
+    profile.vacation_start &&
+    profile.vacation_end &&
+    today >= profile.vacation_start &&
+    today <= profile.vacation_end;
+
   // Fetch user's items
   const { data: items } = await supabase
     .from("items")
@@ -92,6 +99,15 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             >
               Profil bearbeiten
             </Link>
+            {vacationActive && (
+              <div style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                background: "rgba(251,191,36,.25)", border: "1px solid rgba(251,191,36,.5)",
+                borderRadius: 20, padding: "4px 14px", fontSize: 13, fontWeight: 600, color: "#FEF3C7",
+              }}>
+                🏖️ Urlaubsmodus aktiv bis {formatDate(profile.vacation_end!)}
+              </div>
+            )}
             <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)" }}>
               {profile.location ? `📍 ${profile.location} · ` : ""}
               Mitglied seit {formatDate(profile.created_at)}

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BOOKING_STATUS_LABELS } from "@/lib/constants";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { BookingActionButtons } from "@/components/booking/booking-action-buttons";
+import { CancelBookingButton } from "@/components/booking/cancel-booking-button";
 
 export const metadata = { title: "Buchungen – ToolCloud" };
 
@@ -261,6 +262,14 @@ function BookingCard({
           </span>
           {viewAs === "owner" && booking.status === "requested" && (
             <BookingActionButtons bookingId={booking.id} />
+          )}
+          {viewAs === "owner" && (booking.status === "requested" || booking.status === "confirmed") && (
+            <div style={{ marginTop: 4 }}>
+              <CancelBookingButton bookingId={booking.id} />
+            </div>
+          )}
+          {viewAs === "borrower" && (booking.status === "requested" || booking.status === "confirmed") && (
+            <CancelBookingButton bookingId={booking.id} />
           )}
         </div>
       </div>

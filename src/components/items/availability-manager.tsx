@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { ItemAvailability } from "@/types";
+import type { ItemAvailability, DateRange } from "@/types";
+import { AvailabilityCalendar } from "@/components/items/availability-calendar";
 
 interface AvailabilityManagerProps {
   itemId: string;
@@ -92,6 +93,12 @@ export function AvailabilityManager({ itemId }: AvailabilityManagerProps) {
     background: "#fff",
   };
 
+  const blockedRanges: DateRange[] = blocked.map((b) => ({
+    start: b.start_date,
+    end: b.end_date,
+    type: "blocked" as const,
+  }));
+
   if (loading) {
     return (
       <div style={{ padding: "12px 0", fontSize: 13, color: "#9CA3AF" }}>
@@ -102,6 +109,19 @@ export function AvailabilityManager({ itemId }: AvailabilityManagerProps) {
 
   return (
     <div>
+      {/* Kalendervorschau der Sperrzeiten */}
+      <div
+        style={{
+          background: "#F9FAFB",
+          border: "1px solid #E5E7EB",
+          borderRadius: 10,
+          padding: 14,
+          marginBottom: 16,
+        }}
+      >
+        <AvailabilityCalendar blockedRanges={blockedRanges} />
+      </div>
+
       {/* Liste vorhandener Sperrzeiten */}
       {blocked.length > 0 ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12 }}>

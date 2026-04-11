@@ -22,6 +22,8 @@ export interface User {
   review_count: number;
   created_at: string;
   verified: boolean;
+  vacation_start?: string | null;  // YYYY-MM-DD
+  vacation_end?: string | null;    // YYYY-MM-DD
 }
 
 export interface Item {

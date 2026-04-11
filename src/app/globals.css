@@ -193,3 +193,38 @@ body {
   animation: tc-spin .7s linear infinite;
 }
 @keyframes tc-spin { to { transform: rotate(360deg); } }
+
+/* ---- Navigation progress bar ---- */
+.tc-nav-bar-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #2E7D62;
+  border-radius: 0 2px 2px 0;
+  animation: tc-bar-loading 12s ease-out forwards;
+  box-shadow: 0 0 8px rgba(46, 125, 98, 0.6);
+}
+.tc-nav-bar-completing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #2E7D62;
+  border-radius: 0 2px 2px 0;
+  animation: tc-bar-completing 350ms ease-out forwards;
+  box-shadow: 0 0 8px rgba(46, 125, 98, 0.6);
+}
+@keyframes tc-bar-loading {
+  0%   { width: 0%; }
+  15%  { width: 35%; }
+  40%  { width: 55%; }
+  70%  { width: 70%; }
+  100% { width: 80%; }
+}
+@keyframes tc-bar-completing {
+  0%   { width: 100%; opacity: 1; }
+  60%  { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}

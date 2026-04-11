@@ -75,6 +75,39 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Urlaubsmodus-Prüfung: Buchungszeitraum darf nicht mit Urlaub des Verleihers überlappen
+  const { data: owner } = await supabase
+    .from("users")
+    .select("vacation_start, vacation_end")
+    .eq("id", item.owner_id)
+    .single();
+
+  if (owner?.vacation_start && owner?.vacation_end) {
+    const vacOverlap =
+      start_date <= owner.vacation_end && end_date >= owner.vacation_start;
+    if (vacOverlap) {
+      return NextResponse.json(
+        { error: "Der Vermieter ist in diesem Zeitraum im Urlaub und nimmt keine Buchungen an." },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Serverseitige Prüfung: Überschneidung mit Sperrzeiten
+  const { data: blockedPeriods } = await supabase
+    .from("item_availability")
+    .select("start_date, end_date")
+    .eq("item_id", item_id)
+    .lte("start_date", end_date)
+    .gte("end_date", start_date);
+
+  if (blockedPeriods && blockedPeriods.length > 0) {
+    return NextResponse.json(
+      { error: "Das Inserat ist in diesem Zeitraum nicht verfügbar." },
+      { status: 400 }
+    );
+  }
+
   const days = differenceInDays(parseISO(end_date), parseISO(start_date));
   const rentalCost = (item.price_per_day ?? 0) * days;
   const serviceFee = rentalCost > 0 ? 1 : 0;

@@ -168,6 +168,57 @@ export function bookingConfirmedEmail(data: BookingConfirmedEmailData): {
   };
 }
 
+// ─── Template: Buchung storniert (→ jeweils andere Partei) ───────────────────
+
+export interface BookingCancelledEmailData {
+  recipientName: string;
+  cancelledByName: string;
+  cancelledBy: "borrower" | "owner";
+  itemTitle: string;
+  startDate: string;
+  endDate: string;
+}
+
+export function bookingCancelledEmail(data: BookingCancelledEmailData): {
+  subject: string;
+  html: string;
+} {
+  const bookingUrl = `${appUrl}/bookings`;
+  const who = data.cancelledBy === "borrower" ? "der Ausleiher" : "der Vermieter";
+
+  const body = `
+    <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">
+      Buchung storniert
+    </h2>
+    <p style="margin:0 0 24px;font-size:15px;color:#374151;">
+      Hallo ${data.recipientName},<br><br>
+      <strong>${data.cancelledByName}</strong> (${who}) hat die Buchungsanfrage
+      für <strong>${data.itemTitle}</strong> storniert.
+    </p>
+
+    <div style="background:#f9fafb;border-left:4px solid #9ca3af;border-radius:0 12px 12px 0;padding:20px;margin-bottom:24px;">
+      <p style="margin:0 0 12px;font-size:16px;font-weight:600;color:#111827;">
+        ${data.itemTitle}
+      </p>
+      <table cellpadding="0" cellspacing="0">
+        ${detail("Von", formatDate(data.startDate))}
+        ${detail("Bis", formatDate(data.endDate))}
+        ${detail("Storniert von", data.cancelledByName)}
+      </table>
+    </div>
+
+    <p style="margin:0;font-size:14px;color:#6b7280;">
+      Der Zeitraum ist jetzt wieder frei verfügbar.
+    </p>
+    ${btn("Zur Buchungsübersicht →", bookingUrl)}
+  `;
+
+  return {
+    subject: `Buchung storniert: ${data.itemTitle}`,
+    html: layout(body),
+  };
+}
+
 // ─── Template: Buchung abgelehnt (→ Mieter) ──────────────────────────────────
 
 export interface BookingRejectedEmailData {
