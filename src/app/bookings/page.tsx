@@ -191,87 +191,94 @@ function BookingCard({
         style={{
           padding: 16,
           display: "flex",
-          gap: 16,
-          alignItems: "center",
+          flexDirection: "column",
+          gap: 12,
           position: "relative",
         }}
       >
-        {/* Icon */}
-        <div
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: 10,
-            background: "#F3F4F6",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 26,
-            flexShrink: 0,
-            overflow: "hidden",
-          }}
-        >
-          {item?.images?.[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.images[0]}
-              alt={item.title ?? ""}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          ) : (
-            "📦"
-          )}
-        </div>
-
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "#111827", marginBottom: 4 }}>
-            {item?.title ?? "Inserat"}
-          </div>
-          <div style={{ fontSize: 13, color: "#9CA3AF" }}>
-            {formatDate(booking.start_date)} – {formatDate(booking.end_date)}
-          </div>
-          {viewAs === "owner" && booking.borrower && (
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
-              Von: {booking.borrower.name}
-            </div>
-          )}
-          {booking.message && (
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              &bdquo;{booking.message}&ldquo;
-            </div>
-          )}
-        </div>
-
-        {/* Right: badge + action buttons — above the card link */}
-        <div style={{ textAlign: "right", flexShrink: 0, position: "relative", zIndex: 2 }}>
-          <span
+        {/* Top row: icon + info + badge */}
+        <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+          {/* Icon */}
+          <div
             style={{
-              display: "block",
-              padding: "3px 10px",
-              borderRadius: 20,
-              fontSize: 12,
-              fontWeight: 600,
-              marginBottom: 6,
-              textAlign: "center",
-              background: statusBg,
-              color: statusColor,
+              width: 52,
+              height: 52,
+              borderRadius: 10,
+              background: "#F3F4F6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 26,
+              flexShrink: 0,
+              overflow: "hidden",
             }}
           >
-            {statusLabel}
-          </span>
-          {viewAs === "owner" && booking.status === "requested" && (
-            <BookingActionButtons bookingId={booking.id} />
-          )}
-          {viewAs === "owner" && (booking.status === "requested" || booking.status === "confirmed") && (
-            <div style={{ marginTop: 4 }}>
-              <CancelBookingButton bookingId={booking.id} />
+            {item?.images?.[0] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={item.images[0]}
+                alt={item.title ?? ""}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              "📦"
+            )}
+          </div>
+
+          {/* Info + badge */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Title row with badge */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: "#111827" }}>
+                {item?.title ?? "Inserat"}
+              </div>
+              <span
+                style={{
+                  display: "inline-block",
+                  padding: "2px 10px",
+                  borderRadius: 20,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  background: statusBg,
+                  color: statusColor,
+                  flexShrink: 0,
+                }}
+              >
+                {statusLabel}
+              </span>
             </div>
-          )}
-          {viewAs === "borrower" && (booking.status === "requested" || booking.status === "confirmed") && (
-            <CancelBookingButton bookingId={booking.id} />
-          )}
+            <div style={{ fontSize: 13, color: "#9CA3AF" }}>
+              {formatDate(booking.start_date)} – {formatDate(booking.end_date)}
+            </div>
+            {viewAs === "owner" && booking.borrower && (
+              <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+                Von: {booking.borrower.name}
+              </div>
+            )}
+            {booking.message && (
+              <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                &bdquo;{booking.message}&ldquo;
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Action buttons row — above the card link */}
+        {(viewAs === "owner" && booking.status === "requested") && (
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", position: "relative", zIndex: 2 }}>
+            <BookingActionButtons bookingId={booking.id} />
+          </div>
+        )}
+        {(viewAs === "owner" && (booking.status === "requested" || booking.status === "confirmed")) && (
+          <div style={{ display: "flex", justifyContent: "flex-end", position: "relative", zIndex: 2 }}>
+            <CancelBookingButton bookingId={booking.id} />
+          </div>
+        )}
+        {(viewAs === "borrower" && (booking.status === "requested" || booking.status === "confirmed")) && (
+          <div style={{ display: "flex", justifyContent: "flex-end", position: "relative", zIndex: 2 }}>
+            <CancelBookingButton bookingId={booking.id} />
+          </div>
+        )}
       </div>
     </div>
   );
