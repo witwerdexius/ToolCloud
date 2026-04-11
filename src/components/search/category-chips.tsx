@@ -1,22 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { CATEGORIES, CATEGORY_LABELS, CATEGORY_ICONS } from "@/lib/constants";
 import type { Category } from "@/types";
 
 export function CategoryChips() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const activeCategory = searchParams.get("category") as Category | null;
 
-  function buildUrl(category: Category | null) {
+  function handleClick(cat: Category) {
     const params = new URLSearchParams(searchParams.toString());
-    if (category) {
-      params.set("category", category);
-    } else {
+    if (activeCategory === cat) {
       params.delete("category");
+    } else {
+      params.set("category", cat);
     }
-    return `/?${params.toString()}`;
+    const qs = params.toString();
+    router.push(qs ? `/?${qs}` : "/");
   }
 
   const chipBase: React.CSSProperties = {
@@ -50,13 +51,13 @@ export function CategoryChips() {
       style={{ display: "flex", gap: 12, flexWrap: "wrap" }}
     >
       {CATEGORIES.map((cat) => (
-        <Link
+        <button
           key={cat}
-          href={buildUrl(cat)}
+          onClick={() => handleClick(cat)}
           style={activeCategory === cat ? chipActive : chipBase}
         >
           {CATEGORY_ICONS[cat]} {CATEGORY_LABELS[cat]}
-        </Link>
+        </button>
       ))}
     </div>
   );
