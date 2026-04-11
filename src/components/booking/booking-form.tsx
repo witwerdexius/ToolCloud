@@ -13,7 +13,6 @@ interface BookingFormProps {
 
 function rangesOverlap(start: string, end: string, ranges: DateRange[]): boolean {
   for (const r of ranges) {
-    // Überlappung: start <= r.end && end >= r.start
     if (start <= r.end && end >= r.start) return true;
   }
   return false;
@@ -28,6 +27,49 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
   const [loading, setLoading] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
+
+  // Selektionsschritt: 0 = nichts, 1 = Von gesetzt, 2 = Von+Bis gesetzt
+  // Wird direkt aus dem State abgeleitet – keine separate State-Variable nötig
+  const selectionStep: 0 | 1 | 2 = !startDate ? 0 : !endDate ? 1 : 2;
+
+  const selectionHint =
+    selectionStep === 0
+      ? "Klicke auf ein Startdatum"
+      : selectionStep === 1
+      ? "Klicke auf ein Enddatum"
+      : "Klicke auf einen Tag, um neu zu beginnen";
+
+  // Warnung: Gesperrte/gebuchte Tage im gewählten Bereich
+  const rangeHasBlocked =
+    startDate && endDate ? rangesOverlap(startDate, endDate, blockedRanges) : false;
+
+  const rangeBlockedMessage = rangeHasBlocked
+    ? blockedRanges.some(
+        (r) => r.type === "booked" && startDate <= r.end && endDate >= r.start
+      )
+      ? "Achtung: Der gewählte Zeitraum enthält bereits gebuchte Tage."
+      : "Achtung: Der gewählte Zeitraum enthält gesperrte Tage."
+    : null;
+
+  function handleDateClick(dateStr: string) {
+    if (selectionStep === 0 || selectionStep === 2) {
+      // 1. oder 3. Klick: Von setzen, Bis leeren
+      setStartDate(dateStr);
+      setEndDate("");
+      setError(null);
+    } else {
+      // 2. Klick: Bis setzen (mit automatischem Tausch)
+      if (dateStr === startDate) return; // gleicher Tag: ignorieren
+      if (dateStr < startDate) {
+        // Automatischer Tausch: neues Datum wird Von, altes Von wird Bis
+        setEndDate(startDate);
+        setStartDate(dateStr);
+      } else {
+        setEndDate(dateStr);
+      }
+      setError(null);
+    }
+  }
 
   const priceCalc =
     startDate && endDate && endDate > startDate
@@ -108,6 +150,26 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Interaktiver Kalender */}
+      <div style={{ marginBottom: 16, padding: 12, background: "#F9FAFB", borderRadius: 8, border: "1px solid #F3F4F6" }}>
+        <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 8, textAlign: "center" }}>
+          {selectionHint}
+        </p>
+        <AvailabilityCalendar
+          blockedRanges={blockedRanges}
+          selectedStart={startDate}
+          selectedEnd={endDate}
+          onDateClick={handleDateClick}
+        />
+      </div>
+
+      {/* Warnung bei gesperrten Tagen im Bereich */}
+      {rangeBlockedMessage && (
+        <p style={{ background: "#FEF3C7", borderRadius: 8, padding: "8px 12px", fontSize: 13, color: "#92400E", margin: "0 0 12px 0", border: "1px solid #FDE68A" }}>
+          ⚠ {rangeBlockedMessage}
+        </p>
+      )}
+
       {/* Date row */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
         <div>
@@ -135,17 +197,6 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
           />
         </div>
       </div>
-
-      {/* Mini-Kalender (zeigt gewählten Zeitraum + Sperren) */}
-      {blockedRanges.length > 0 && (
-        <div style={{ marginBottom: 16, padding: 12, background: "#F9FAFB", borderRadius: 8, border: "1px solid #F3F4F6" }}>
-          <AvailabilityCalendar
-            blockedRanges={blockedRanges}
-            selectedStart={startDate}
-            selectedEnd={endDate}
-          />
-        </div>
-      )}
 
       {/* Message */}
       <label style={labelStyle}>Nachricht an den Vermieter (optional)</label>
