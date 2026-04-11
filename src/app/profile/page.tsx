@@ -67,7 +67,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       {/* Profile header */}
       <div style={{ background: "linear-gradient(135deg, #2E7D62 0%, #3FA882 100%)", padding: "36px 24px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
+          {/* Top: Avatar, Name, Meta, Button – zentriert */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
             <div
               style={{
                 width: 80, height: 80, borderRadius: "50%",
@@ -79,21 +80,15 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             >
               {initials}
             </div>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>{profile.name}</div>
-              <div style={{ fontSize: 14, color: "rgba(255,255,255,.8)", marginTop: 4 }}>
-                {profile.location && `📍 ${profile.location} · `}
-                Mitglied seit {formatDate(profile.created_at)}
-              </div>
-              <div style={{ fontSize: 14, color: "rgba(255,255,255,.8)", marginTop: 4 }}>
-                {profile.rating > 0 && `⭐ ${profile.rating.toFixed(1)} Bewertung · `}
-                {profile.verified && "✓ E-Mail bestätigt"}
-              </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{profile.name}</div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)" }}>
+              {profile.location ? `📍 ${profile.location} · ` : ""}
+              Mitglied seit {formatDate(profile.created_at)}
             </div>
             <Link
               href="/profile/edit"
               style={{
-                marginLeft: "auto", padding: "10px 20px", borderRadius: 8,
+                padding: "10px 24px", borderRadius: 8,
                 fontSize: 14, fontWeight: 600, color: "#fff",
                 border: "2px solid rgba(255,255,255,.6)",
                 background: "rgba(255,255,255,.1)", textDecoration: "none",
@@ -104,14 +99,13 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
           </div>
 
           {/* Stats */}
-          <div className="profile-stats-row" style={{ display: "flex", gap: 28, marginTop: 20, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", justifyContent: "space-around", marginTop: 24 }}>
             <div style={{ textAlign: "center", color: "#fff" }}>
               <div style={{ fontSize: 22, fontWeight: 800 }}>{bookings?.length ?? 0}</div>
               <div style={{ fontSize: 12, opacity: 0.8, marginTop: 2 }}>Ausgeliehen</div>
             </div>
             <div style={{ textAlign: "center", color: "#fff" }}>
               <div style={{ fontSize: 22, fontWeight: 800 }}>{items?.length ?? 0}</div>
-              <div style={{ fontSize: 22, fontWeight: 800, display: "none" }}></div>
               <div style={{ fontSize: 12, opacity: 0.8, marginTop: 2 }}>Inserate</div>
             </div>
             <div style={{ textAlign: "center", color: "#fff" }}>
