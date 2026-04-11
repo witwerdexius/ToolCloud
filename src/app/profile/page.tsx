@@ -67,8 +67,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       {/* Profile header */}
       <div style={{ background: "linear-gradient(135deg, #2E7D62 0%, #3FA882 100%)", padding: "36px 24px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          {/* Top: Avatar, Name, Meta, Button – zentriert */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
+          {/* Top: Avatar, Name, Button, Meta – zentriert */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
             <div
               style={{
                 width: 80, height: 80, borderRadius: "50%",
@@ -81,10 +81,6 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
               {initials}
             </div>
             <div style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{profile.name}</div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)" }}>
-              {profile.location ? `📍 ${profile.location} · ` : ""}
-              Mitglied seit {formatDate(profile.created_at)}
-            </div>
             <Link
               href="/profile/edit"
               style={{
@@ -96,6 +92,10 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             >
               Profil bearbeiten
             </Link>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)" }}>
+              {profile.location ? `📍 ${profile.location} · ` : ""}
+              Mitglied seit {formatDate(profile.created_at)}
+            </div>
           </div>
 
           {/* Stats */}
