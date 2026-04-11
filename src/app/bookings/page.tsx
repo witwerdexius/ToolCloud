@@ -164,85 +164,105 @@ function BookingCard({
   return (
     <div
       style={{
+        position: "relative",
         background: "#fff",
         borderRadius: 12,
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-        padding: 16,
-        display: "flex",
-        gap: 16,
-        alignItems: "center",
       }}
     >
-      {/* Icon */}
+      {/* Full-card link */}
+      <Link
+        href={`/items/${item?.id}`}
+        aria-label={`Buchung für ${item?.title ?? "Inserat"} anzeigen`}
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 12,
+          zIndex: 1,
+          display: "block",
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      />
+
+      {/* Card content */}
       <div
         style={{
-          width: 52,
-          height: 52,
-          borderRadius: 10,
-          background: "#F3F4F6",
+          padding: 16,
           display: "flex",
+          gap: 16,
           alignItems: "center",
-          justifyContent: "center",
-          fontSize: 26,
-          flexShrink: 0,
-          overflow: "hidden",
+          position: "relative",
         }}
       >
-        {item?.images?.[0] ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={item.images[0]}
-            alt={item.title ?? ""}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : (
-          "📦"
-        )}
-      </div>
-
-      {/* Info */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <Link
-          href={`/items/${item?.id}`}
-          style={{ fontSize: 15, fontWeight: 600, color: "#111827", textDecoration: "none", display: "block", marginBottom: 4 }}
-        >
-          {item?.title ?? "Inserat"}
-        </Link>
-        <div style={{ fontSize: 13, color: "#9CA3AF" }}>
-          {formatDate(booking.start_date)} – {formatDate(booking.end_date)}
-        </div>
-        {viewAs === "owner" && booking.borrower && (
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
-            Von: {booking.borrower.name}
-          </div>
-        )}
-        {booking.message && (
-          <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            &bdquo;{booking.message}&ldquo;
-          </div>
-        )}
-      </div>
-
-      {/* Right: badge + amount */}
-      <div style={{ textAlign: "right", flexShrink: 0 }}>
-        <span
+        {/* Icon */}
+        <div
           style={{
-            display: "block",
-            padding: "3px 10px",
-            borderRadius: 20,
-            fontSize: 12,
-            fontWeight: 600,
-            marginBottom: 6,
-            textAlign: "center",
-            background: statusBg,
-            color: statusColor,
+            width: 52,
+            height: 52,
+            borderRadius: 10,
+            background: "#F3F4F6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 26,
+            flexShrink: 0,
+            overflow: "hidden",
           }}
         >
-          {statusLabel}
-        </span>
-        {viewAs === "owner" && booking.status === "requested" && (
-          <BookingActionButtons bookingId={booking.id} />
-        )}
+          {item?.images?.[0] ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.images[0]}
+              alt={item.title ?? ""}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            "📦"
+          )}
+        </div>
+
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#111827", marginBottom: 4 }}>
+            {item?.title ?? "Inserat"}
+          </div>
+          <div style={{ fontSize: 13, color: "#9CA3AF" }}>
+            {formatDate(booking.start_date)} – {formatDate(booking.end_date)}
+          </div>
+          {viewAs === "owner" && booking.borrower && (
+            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+              Von: {booking.borrower.name}
+            </div>
+          )}
+          {booking.message && (
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              &bdquo;{booking.message}&ldquo;
+            </div>
+          )}
+        </div>
+
+        {/* Right: badge + action buttons — above the card link */}
+        <div style={{ textAlign: "right", flexShrink: 0, position: "relative", zIndex: 2 }}>
+          <span
+            style={{
+              display: "block",
+              padding: "3px 10px",
+              borderRadius: 20,
+              fontSize: 12,
+              fontWeight: 600,
+              marginBottom: 6,
+              textAlign: "center",
+              background: statusBg,
+              color: statusColor,
+            }}
+          >
+            {statusLabel}
+          </span>
+          {viewAs === "owner" && booking.status === "requested" && (
+            <BookingActionButtons bookingId={booking.id} />
+          )}
+        </div>
       </div>
     </div>
   );
