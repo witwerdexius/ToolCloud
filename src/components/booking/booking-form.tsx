@@ -59,7 +59,7 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
       setError(null);
     } else {
       // 2. Klick: Bis setzen (mit automatischem Tausch)
-      if (dateStr === startDate) return; // gleicher Tag: ignorieren
+      // gleicher Tag erlaubt (Tagesmiete)
       if (dateStr < startDate) {
         // Automatischer Tausch: neues Datum wird Von, altes Von wird Bis
         setEndDate(startDate);
@@ -72,7 +72,7 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
   }
 
   const priceCalc =
-    startDate && endDate && endDate > startDate
+    startDate && endDate && endDate >= startDate
       ? calcTotalPrice(item.price_per_day, startDate, endDate, item.deposit)
       : null;
 
@@ -84,8 +84,8 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
       setError("Bitte Start- und Enddatum auswählen.");
       return;
     }
-    if (endDate <= startDate) {
-      setError("Enddatum muss nach dem Startdatum liegen.");
+    if (endDate < startDate) {
+      setError("Enddatum darf nicht vor dem Startdatum liegen.");
       return;
     }
     if (rangesOverlap(startDate, endDate, blockedRanges)) {
@@ -171,7 +171,7 @@ export function BookingForm({ item, blockedRanges = [] }: BookingFormProps) {
       )}
 
       {/* Date row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 14 }}>
         <div>
           <label style={labelStyle}>Von</label>
           <input

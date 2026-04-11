@@ -33,7 +33,7 @@ export function calcTotalPrice(
   serviceFee: number;
   total: number;
 } {
-  const days = differenceInDays(parseISO(endDate), parseISO(startDate));
+  const days = Math.max(1, differenceInDays(parseISO(endDate), parseISO(startDate)));
   const rentalCost = (pricePerDay ?? 0) * days;
   const effectiveServiceFee = rentalCost > 0 ? serviceFee : 0;
   const total = rentalCost + deposit + effectiveServiceFee;
