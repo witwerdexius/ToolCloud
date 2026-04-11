@@ -314,10 +314,19 @@ function BookingRow({ booking }: { booking: BookingRowData }) {
           width: 52, height: 52, borderRadius: 10,
           background: "#F3F4F6", display: "flex",
           alignItems: "center", justifyContent: "center",
-          fontSize: 26, flexShrink: 0,
+          fontSize: 26, flexShrink: 0, overflow: "hidden",
         }}
       >
-        {icon}
+        {itemData?.images?.[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={itemData.images[0]}
+            alt={itemData.title ?? ""}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          icon
+        )}
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4, color: "#111827" }}>
@@ -358,8 +367,17 @@ function MyItemCard({ item }: { item: MyItemData }) {
 
   return (
     <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", overflow: "hidden" }}>
-      <div style={{ height: 120, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>
-        {icon}
+      <div style={{ height: 120, background: "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, overflow: "hidden", position: "relative" }}>
+        {item.images?.[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.images[0]}
+            alt={item.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          icon
+        )}
       </div>
       <div style={{ padding: 12 }}>
         <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 6, color: "#111827" }}>{item.title}</div>
