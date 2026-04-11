@@ -14,6 +14,7 @@ const CATEGORY_BG: Record<Category, string> = {
   kueche:    "#FFFBEB",
   garten:    "#FFF1F2",
   party:     "#FEF3C7",
+  sonstiges: "#F3F4F6",
 };
 
 interface ItemCardProps {

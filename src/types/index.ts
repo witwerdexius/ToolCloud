@@ -8,7 +8,8 @@ export type Category =
   | "foto_video"
   | "kueche"
   | "garten"
-  | "party";
+  | "party"
+  | "sonstiges";
 
 export interface User {
   id: string;

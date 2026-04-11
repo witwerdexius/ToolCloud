@@ -9,6 +9,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   kueche:    "Küche",
   garten:    "Garten",
   party:     "Party & Events",
+  sonstiges: "Sonstiges",
 };
 
 export const CATEGORY_ICONS: Record<Category, string> = {
@@ -20,6 +21,7 @@ export const CATEGORY_ICONS: Record<Category, string> = {
   kueche:    "🍳",
   garten:    "🌿",
   party:     "🎉",
+  sonstiges: "📦",
 };
 
 export const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];

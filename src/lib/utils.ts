@@ -35,9 +35,10 @@ export function calcTotalPrice(
 } {
   const days = differenceInDays(parseISO(endDate), parseISO(startDate));
   const rentalCost = (pricePerDay ?? 0) * days;
-  const total = rentalCost + deposit + serviceFee;
+  const effectiveServiceFee = rentalCost > 0 ? serviceFee : 0;
+  const total = rentalCost + deposit + effectiveServiceFee;
 
-  return { days, rentalCost, deposit, serviceFee, total };
+  return { days, rentalCost, deposit, serviceFee: effectiveServiceFee, total };
 }
 
 // ─── Sterne-Array ─────────────────────────────────────────────────────────────

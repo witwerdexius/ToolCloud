@@ -16,8 +16,15 @@ const MONTHS = [
   "Juli", "August", "September", "Oktober", "November", "Dezember",
 ];
 
+function toLocalDateString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 function isInRange(date: Date, start: string, end: string): boolean {
-  const d = date.toISOString().split("T")[0];
+  const d = toLocalDateString(date);
   return d >= start && d <= end;
 }
 
@@ -30,7 +37,7 @@ function isDayBlocked(date: Date, ranges: DateRange[]): "booked" | "blocked" | n
 
 function isDaySelected(date: Date, start?: string, end?: string): boolean {
   if (!start || !end) return false;
-  const d = date.toISOString().split("T")[0];
+  const d = toLocalDateString(date);
   return d >= start && d <= end;
 }
 
@@ -138,7 +145,7 @@ export function AvailabilityCalendar({
           const isPast = date < today;
           const blocked = isDayBlocked(date, blockedRanges);
           const selected = isDaySelected(date, selectedStart, selectedEnd);
-          const isToday = date.toISOString().split("T")[0] === today.toISOString().split("T")[0];
+          const isToday = toLocalDateString(date) === toLocalDateString(today);
 
           let bg = "transparent";
           let color = "#111827";
